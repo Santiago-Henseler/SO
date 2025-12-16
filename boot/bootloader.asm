@@ -3,18 +3,29 @@ bits 16
 start:  jmp boot
 
 boot:
-        cli                 ; Bloqueo las interrupciones
-        cld
-        mov  si, initmsg    
-loop:   lodsb               ; Copia el primer byte de lo que esta en [si] a al e incrementa si en 1
-        cmp al, 0
-        je   end
-        mov  ah, 0Eh        ; Numero de funcion para escribir en terminal 
-        int  10h            ; Interrupcion para servicios de vídeo de bios
-        jmp  loop
-end:    hlt
+    cli                 ; Bloqueo las interrupciones
+    cld
+    jmp  loadSystem   
+    hlt
 
-initmsg db "Iniciando Sistema Operativo"
+loadSystem:
+    mov ax, 0x10       ; A donde voy a levantar en ram el sector leido
+    mov es, ax
+    xor bx, bx
+
+    mov ah, 02h         ; Indico que quiero leer un sector del disco
+    mov al, 1           ; Cantidad de Sectores
+    mov ch, 0
+    mov cl, 2           ; Sector del disco a leer
+    mov dh, 0
+    mov dl, 0
+    int 13h             ; Interrupcion para servicios de disco de bios
+    jc  error
+    jmp  0x10:0x0       ; Salto lejano
+    ret 
+
+error:
+    hlt
 
 times 510 - ($-$$) db 0
 
