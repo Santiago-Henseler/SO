@@ -15,7 +15,7 @@ loadKernel:
     xor  bx, bx
  
     mov  ah, 02h             ; Indico que quiero leer un sector del disco
-    mov  al, 1               ; Cantidad de Sectores
+    mov  al, 20              ; Cantidad de Sectores
     mov  ch, 0
     mov  cl, 2               ; Sector del disco a leer
     mov  dh, 0
