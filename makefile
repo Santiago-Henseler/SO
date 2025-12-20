@@ -11,7 +11,8 @@ bootloader:
 
 kernel.bin:	
 	nasm -f elf32 kernel/kernelEntry.asm -o kernelEntry.o
-	gcc $(CFLAGS) -I kernel/ -c kernel/*.c kernel/drivers/*.c
+	nasm -f elf32 kernel/drivers/io.asm -o io.o
+	gcc $(CFLAGS) -I kernel/ -c kernel/*.c kernel/drivers/*/*.c
 	ld -m elf_i386 -T link.ld *.o -o kernel.elf
 	objcopy -O binary kernel.elf kernel.bin
 	

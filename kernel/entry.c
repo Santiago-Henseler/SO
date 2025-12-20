@@ -1,4 +1,4 @@
-#include "drivers/vga.h"
+#include "drivers/vga/vga.h"
 
 void main(){
 
@@ -6,14 +6,10 @@ void main(){
 
     clearVga();
 
-    for(int i = 0; i< 12; i++){
-            printVga(GREEN, s);   
-            printVga(BLUE, s); 
-    }
+    printVga(WHITE, "Hola\n");
+printVga(WHITE, "Mundo\n");
+printVga(WHITE, "Kernel OK\n");
 
-    printVga(BLUE, s);
-    printVga(BLUE, s);
-    printVga(BLUE, s);
 
     for (;;);
 }
