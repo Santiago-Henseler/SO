@@ -1,7 +1,7 @@
 ENTRY(kernelEntry)
 
 SECTIONS {
-    . = 0x100;
+    . = 0x00100000;
 
     .text : { *(.text*) }
     .rodata : { *(.rodata*) }

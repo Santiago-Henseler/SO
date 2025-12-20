@@ -6,6 +6,12 @@ int cursorX = 0;
 int cursorY = 0;
 
 void moveCursor(int pos){
+
+    if (pos < 0)
+        pos = 0;
+    else
+        pos = pos % (VGA_HEIGHT*VGA_WIDTH);
+
     // Seteo para enviar parte alta de pos y lo envio
     outB(COMMAND_PORT_VGA, 14); 
     outB(DATA_PORT_VGA, ((pos >> 8) & 0x00FF));
@@ -40,7 +46,7 @@ void printVga(int color, char* str){
             scrollUpVga();
     }
 
-    moveCursor(cursorX + VGA_WIDTH*cursorY);
+    //moveCursor(cursorX + VGA_WIDTH*cursorY);
     return;
 }
 
@@ -54,7 +60,7 @@ void newLineVga(){
         cursorX = 0;
     }
 
-    moveCursor(cursorX + VGA_WIDTH*cursorY);
+    //moveCursor(cursorX + VGA_WIDTH*cursorY);
 
     return;
 }
@@ -63,8 +69,8 @@ void scrollUpVga(){
    
     for(int y = 0; y < VGA_HEIGHT-1; y++){
         for(int x = 0; x < VGA_WIDTH; x++){
-            volatile char * videoMem = VIDEOMEM + 2*(cursorX + VGA_WIDTH*cursorY);
-            volatile char * videoMemOld = VIDEOMEM +2*(cursorX + VGA_WIDTH*(cursorY+1));
+            volatile char * videoMem = VIDEOMEM + 2*(x + VGA_WIDTH*y);
+            volatile char * videoMemOld = VIDEOMEM +2*(x + VGA_WIDTH*(y+1));
             videoMem[0] = videoMemOld[0];
             videoMem[1] = videoMemOld[1]; //TODO: chequear anda medio raro el paso de formato
         }
@@ -76,7 +82,7 @@ void scrollUpVga(){
 void clearVga(){
     for(int y = 0; y < VGA_HEIGHT; y++){
         for(int x = 0; x < VGA_WIDTH; x++){
-            volatile char * videoMem = VIDEOMEM + 2*(cursorX + VGA_WIDTH*cursorY);
+            volatile char * videoMem = VIDEOMEM + 2*(x + VGA_WIDTH*y);
             videoMem[0] = ' ';
             videoMem[1] = WHITE;
         }
@@ -84,7 +90,8 @@ void clearVga(){
     
     cursorX = 0;
     cursorY = 0;
-    moveCursor(0);
+    
+    //moveCursor(0);
 
     return;
 }

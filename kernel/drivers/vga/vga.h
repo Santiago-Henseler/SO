@@ -19,6 +19,8 @@
 #define RED   4
 #define WHITE 7
 
+void moveCursor(int pos);
+
 // Escribo el str* sobre la memoria mapeada de la vga //
 void printVga(int color, char* str);
 

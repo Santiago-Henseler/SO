@@ -2,14 +2,11 @@
 
 void main(){
 
-    char s[] = "[Info] Se entro en modo protegido y control del kernel\n";
-
     clearVga();
 
-    printVga(WHITE, "Hola\n");
-printVga(WHITE, "Mundo\n");
-printVga(WHITE, "Kernel OK\n");
+    char s[] = "[Info] Se entro en modo protegido y control del kernel\n";
 
+    printVga(WHITE, s);
 
     for (;;);
 }
