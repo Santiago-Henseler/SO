@@ -22,7 +22,7 @@ void moveCursor(int pos){
     return;
 }
 
-void printVga(int color, char* str){
+void printVga(const char* str, int color){
     while (*str)
     {
         if(*str == '\n'){

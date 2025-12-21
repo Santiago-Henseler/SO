@@ -20,7 +20,7 @@
 #define WHITE 7
 
 // Escribo el str* sobre la memoria mapeada de la vga //
-void printVga(int color, char* str);
+void printVga(const char* str, int color);
 
 // Limpio toda la memoria mapeada de la vga //
 void clearVga(void);
