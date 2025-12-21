@@ -22,4 +22,4 @@ bootdisk:
 	dd if=kernel.bin of=disk.img bs=512 count=20 seek=1
 
 run:
-	qemu-system-i386 -machine q35 -fda disk.img -gdb tcp::26000
+	qemu-system-i386 -machine q35 -fda disk.img -gdb tcp::26000 

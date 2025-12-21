@@ -4,13 +4,16 @@ bits 16                     ; Modo real del procesador
 start:  
     cli                     ; Bloqueo las interrupciones
     cld
+    xor ax, ax
+    mov ds, ax
+    mov sp, 0x7C00 
     call loadKernel   
     lgdt [GDT]              ; Carga la GDT 
     jmp  changeMode
     hlt
 
 loadKernel:
-    mov  ax, 0x10            ; A donde voy a levantar en ram el sector leido
+    mov  ax, 0x1000          ; A donde voy a levantar en ram el sector leido (0x10000)
     mov  es, ax
     xor  bx, bx
  
@@ -35,8 +38,8 @@ changeMode:
     mov  eax, cr0
     or   eax, 1
     mov  cr0, eax             ; Seteo el modo de 32 bits 
-    jmp  GDT_code - GDT_start:0x00000100 ; Salto al inicio del segmento de codigo
-
+    jmp  0x08:pm
+    
 %include "printBios.asm"
 
 ;;;Global Descriptor Table definicion;;;
@@ -55,6 +58,10 @@ GDT_end:
 
 errorMsg: db "[Error] Hubo un problema al cargar el kernel", 0Dh, 0Ah, 0
 diskOk:   db "[Info] Se cargo el kernel correctamente", 0Dh, 0Ah, 0
+
+bits 32
+pm:
+    jmp  0x08:0x10000        ; Salto a KernelEntry
 
 times 510 - ($-$$) db 0     ; Agrega la cantidad de 0 necesaria para completar el sector de disco 
 

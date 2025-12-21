@@ -5,6 +5,7 @@ extern stack_top
 extern main
 
 kernelEntry:
+
     ; Seteo los segmentos de datos
     mov ax, 0x10
 	mov ds, ax
