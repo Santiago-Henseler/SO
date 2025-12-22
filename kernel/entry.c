@@ -4,9 +4,11 @@
 void main(){
     clearVga();
 
-    printf("%s %s", "[Info] Se entro en modo protegido y control del kernel\n", "niiiii");
+    //printf("%s  nnn %s", "[Info] Se entro en modo protegido y control del kernel\n", "niiiii");
 
-    printVga("65",RED);
+      char caracter_ascii = (char)(5 + '0');
+
+    printVga( caracter_ascii, RED);
 
     for (;;);
 }

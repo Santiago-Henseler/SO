@@ -3,8 +3,10 @@
 void printf(const char* str, ...){
     
     va_list args;
-
     va_start(args, str);
+
+    char * format;
+    int i = 0;
 
     while (*str)
     {
@@ -13,20 +15,32 @@ void printf(const char* str, ...){
             switch (*str){
                 case 's':
                     char * s = va_arg(args, char *);
-                    printVga(s, WHITE); // TODO: debo apendear el str al texto
+                    while (*s){
+                        format[i] = *s;
+                        s++; i++;
+                    }
                     break;
                 case 'i':
                     int i = va_arg(args, int);
-                    printVga(i, RED); // TODO: debo poder printear enteros 
+
+                    
+                     
                     break;
                 default:
                     break;
             }
+        }else{
+            format[i] = *str;
+            i++;
         }
         str++;
     }
     
     va_end(args);
+
+    format[i++] = '\0';
+
+    printVga(format, WHITE);
 
     return;
 }
