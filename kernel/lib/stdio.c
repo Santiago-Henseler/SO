@@ -5,14 +5,15 @@ void printf(const char* str, ...){
     va_list args;
     va_start(args, str);
 
+    char * txt = str;
     char * format;
     int i = 0;
 
-    while (*str)
+    while (*txt)
     {
-        if(*str == '%'){
-            str++;
-            switch (*str){
+        if(*txt == '%'){
+            txt++;
+            switch (*txt){
                 case 's':
                     char * s = va_arg(args, char *);
                     while (*s){
@@ -20,20 +21,37 @@ void printf(const char* str, ...){
                         s++; i++;
                     }
                     break;
+                case 'c':
+                    char * c = va_arg(args, char *);
+                    format[i] = c;
+                    i++;
+                    break;
                 case 'i':
-                    int i = va_arg(args, int);
+                    int num = va_arg(args, int);
 
-                    
-                     
+                    // TODO: cambiar a numToStr cuando maneje memoria dinamica
+                    char *p;
+                    int j = 0;
+
+                    while (num){
+                        p[j] = num%10 + '0';
+                        num /= 10;
+                        j++;
+                    }
+
+                    for(j--; j>=0; j--){
+                        format[i] = p[j];
+                        i++;
+                    }
                     break;
                 default:
                     break;
             }
         }else{
-            format[i] = *str;
+            format[i] = *txt;
             i++;
         }
-        str++;
+        txt++;
     }
     
     va_end(args);
