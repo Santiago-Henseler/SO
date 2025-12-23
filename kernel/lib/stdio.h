@@ -8,7 +8,7 @@
 
 // Muestra en pantalla agregando el formato indicado 
 // Soportado:  %s => char * ;  %i => int  ;  %c => char         
-void printf(const char* str, ...);
+void printf(char* str, ...);
 
 // Wraper a printf para escribir un solo caracter
 void putChar(char c);

@@ -1,6 +1,6 @@
 #include "stdio.h"
 
-void printf(const char* str, ...){
+void printf(char* str, ...){
     // TODO: ver de optimizar cuando tenga memoria dinamica
     va_list args;
     va_start(args, str);
@@ -36,7 +36,7 @@ void printf(const char* str, ...){
 
                     p[j] ='\0';
 
-                    strReverse(&p);
+                    strReverse((char *)&p);
                     printVga(p, WHITE);
 
                     break;

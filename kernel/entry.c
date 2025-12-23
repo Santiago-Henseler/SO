@@ -1,19 +1,18 @@
 #include "drivers/vga/vga.h"
 #include "lib/stdio.h"
-#include "lib/string.h"
+#include "interrupts/idt.h"
+
 
 void main(){
     clearVga();
+    initInterrupts();
 
-    printf("sdsdsd %s %i %c \n",  "AAA", 30, 'a');
+        printf("a");
 
-    printf("Largo total de %s: %i\n", "hello word" ,strLen("hello word"));
+    asm volatile("int 0x0");
 
-    char * s = "Hellooo word";
+    printf("[Info] Se entro en modo protegido y se activaron las interrupciones \n");
 
-    strReverse(s);
-
-    printf("%s", s);
 
     for (;;);
 }
