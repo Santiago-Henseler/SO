@@ -10,4 +10,10 @@
 // Soportado:  %s => char * ;  %i => int  ;  %c => char         
 void printf(const char* str, ...);
 
+// Wraper a printf para escribir un solo caracter
+void putChar(char c);
+
+// Wraper a printf para escribir un entero
+void putInt(int i);
+
 #endif

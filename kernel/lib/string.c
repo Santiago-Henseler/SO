@@ -22,7 +22,7 @@ char * numToStr(int num){
 //        i++;
 //    }
 //
-//    return str;
+//    return strReverse(str);
 }
 
 void strReverse(char *str){

@@ -1,13 +1,11 @@
 #include "stdio.h"
 
 void printf(const char* str, ...){
-    
+    // TODO: ver de optimizar cuando tenga memoria dinamica
     va_list args;
     va_start(args, str);
 
     char * txt = str;
-    char * format;
-    int i = 0;
 
     while (*txt)
     {
@@ -16,21 +14,18 @@ void printf(const char* str, ...){
             switch (*txt){
                 case 's':
                     char * s = va_arg(args, char *);
-                    while (*s){
-                        format[i] = *s;
-                        s++; i++;
-                    }
+                    printVga(s, WHITE);
                     break;
                 case 'c':
-                    char * c = va_arg(args, char *);
-                    format[i] = c;
-                    i++;
+                    char c = va_arg(args, int);
+                    char format[2] = {c, '\0'};
+                    printVga(format, WHITE);
                     break;
                 case 'i':
                     int num = va_arg(args, int);
 
                     // TODO: cambiar a numToStr cuando maneje memoria dinamica
-                    char *p;
+                    char p[12];
                     int j = 0;
 
                     while (num){
@@ -39,26 +34,31 @@ void printf(const char* str, ...){
                         j++;
                     }
 
-                    for(j--; j>=0; j--){
-                        format[i] = p[j];
-                        i++;
-                    }
+                    p[j] ='\0';
+
+                    strReverse(&p);
+                    printVga(p, WHITE);
+
                     break;
                 default:
                     break;
             }
         }else{
-            format[i] = *txt;
-            i++;
+            char format[2] = {*txt, '\0'};
+            printVga(format, WHITE);
         }
         txt++;
     }
     
     va_end(args);
-
-    format[i++] = '\0';
-
-    printVga(format, WHITE);
-
     return;
 }
+
+void putChar(char c){
+    printf("%c", c);
+}
+
+void putInt(int i){
+    printf("%i", i);
+}
+

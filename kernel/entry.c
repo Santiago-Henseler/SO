@@ -5,9 +5,9 @@
 void main(){
     clearVga();
 
-    //printf("%s  nnn %s", "[Info] Se entro en modo protegido y control del kernel\n", "niiiii");
+    printf("sdsdsd %s %i %c \n",  "AAA", 30, 'a');
 
-    //printf("Largo total: %i", strLen("hello word"));
+    printf("Largo total de %s: %i\n", "hello word" ,strLen("hello word"));
 
     char * s = "Hellooo word";
 
