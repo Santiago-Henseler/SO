@@ -21,7 +21,7 @@ void printf(char* str, ...){
                     printVga(format, WHITE);
                     break;
                 case 'i':
-                    int num = va_arg(args, int);
+                    int num = va_arg(args, int);// Realmente es unsigned int lo que representa
                     char p[12];                 // Como maximo puedo representar 2**32-1 numeros (entran en 12 caracteres)
                     numToStr(num, p);
                     printVga(p, WHITE);

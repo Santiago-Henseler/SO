@@ -3,6 +3,8 @@
 
 // Headers extra
 #include "../lib/stdint.h"
+#include "../lib/stdio.h"
+#include "pic.h"
 
 typedef struct {
     uint32 ds;                                            // data segment

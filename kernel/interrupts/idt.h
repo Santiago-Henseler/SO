@@ -3,6 +3,7 @@
 
 // Headres extra
 #include "../lib/stdint.h"
+#include "pic.h"
 
 // Cantidad de entradas
 #define IDT_ENTRIES 256

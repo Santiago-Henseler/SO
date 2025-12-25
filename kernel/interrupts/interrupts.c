@@ -1,21 +1,20 @@
 #include "interrupts.h"
-#include "../lib/stdio.h"
 
-void divZeroInterrupt(InterruptRegisters * interruptRegs);
-void interruptRegsDump(InterruptRegisters * interruptRegs);
+void interruptSoftware(InterruptRegisters * interruptRegs);
+void interruptHardware(InterruptRegisters * interruptRegs);
 
 void (* handlers[32])(InterruptRegisters * interruptRegs) = {
-    &divZeroInterrupt, &interruptRegsDump, &interruptRegsDump,
-    &interruptRegsDump, &interruptRegsDump, &interruptRegsDump,
-    &interruptRegsDump, &interruptRegsDump, &interruptRegsDump,
-    &interruptRegsDump, &interruptRegsDump, &interruptRegsDump,
-    &interruptRegsDump, &interruptRegsDump, &interruptRegsDump,
-    &interruptRegsDump, &interruptRegsDump, &interruptRegsDump,
-    &interruptRegsDump, &interruptRegsDump, &interruptRegsDump,
-    &interruptRegsDump, &interruptRegsDump, &interruptRegsDump,
-    &interruptRegsDump, &interruptRegsDump, &interruptRegsDump,
-    &interruptRegsDump, &interruptRegsDump, &interruptRegsDump,
-    &interruptRegsDump, &interruptRegsDump
+    &interruptSoftware, &interruptSoftware, &interruptSoftware,
+    &interruptSoftware, &interruptSoftware, &interruptSoftware,
+    &interruptSoftware, &interruptSoftware, &interruptSoftware,
+    &interruptSoftware, &interruptSoftware, &interruptSoftware,
+    &interruptSoftware, &interruptSoftware, &interruptSoftware,
+    &interruptSoftware, &interruptSoftware, &interruptSoftware,
+    &interruptSoftware, &interruptHardware, &interruptHardware,
+    &interruptHardware, &interruptHardware, &interruptHardware,
+    &interruptHardware, &interruptHardware, &interruptHardware,
+    &interruptHardware, &interruptHardware, &interruptHardware,
+    &interruptHardware, &interruptHardware
 };
 
 void interrupthandler(InterruptRegisters * interruptRegs){
@@ -29,11 +28,19 @@ void interrupthandler(InterruptRegisters * interruptRegs){
     handlers[interruptRegs->interrupt](interruptRegs);
 }
 
-void divZeroInterrupt(InterruptRegisters * interruptRegs){
-    printf("[Error]: Se trato de dividir por 0\n");
-}
-
 void interruptRegsDump(InterruptRegisters * interruptRegs){
     printf("####################################\n");
-    printf("Interrupt %i", interruptRegs->interrupt);
+    printf("Interrupt: %i\n", interruptRegs->interrupt);
 }	
+
+void interruptSoftware(InterruptRegisters * interruptRegs){
+    interruptRegsDump(interruptRegs);
+}
+
+void interruptHardware(InterruptRegisters * interruptRegs){
+
+    interruptRegsDump(interruptRegs);
+
+    // ACK de la interrupcion al PIC
+    outB(PIC_PRIMARY_PORT, 0x20);
+}

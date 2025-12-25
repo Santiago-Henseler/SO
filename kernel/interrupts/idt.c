@@ -94,4 +94,6 @@ void initInterrupts(){
     idtSetEntry(31, (uint32)interruptHandlerNoCode31, 0x08, IDT_FLAGS);
 
     idtLoad(&idt);
+
+    mapPic();
 }
