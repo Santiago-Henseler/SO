@@ -60,10 +60,6 @@ void initInterrupts(){
         idtEntry[i].type_attr   = 0;
     }
 
-    for (int i = 32; i < IDT_ENTRIES; i++) {
-        idtSetEntry(i, (uint32)interruptHandlerNoCode0, 0x08, IDT_FLAGS);
-    }
-
     idtSetEntry(0,  (uint32)interruptHandlerNoCode0,  0x08, IDT_FLAGS);
     idtSetEntry(1,  (uint32)interruptHandlerNoCode1,  0x08, IDT_FLAGS);
     idtSetEntry(2,  (uint32)interruptHandlerNoCode2,  0x08, IDT_FLAGS);

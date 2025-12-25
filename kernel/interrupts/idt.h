@@ -4,7 +4,7 @@
 // Headres extra
 #include "../lib/stdint.h"
 
-// cantidad de entradas
+// Cantidad de entradas
 #define IDT_ENTRIES 256
 
 // Flags

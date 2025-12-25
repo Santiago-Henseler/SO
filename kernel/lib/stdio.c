@@ -25,9 +25,10 @@ void printf(char* str, ...){
                     int num = va_arg(args, int);
 
                     // TODO: cambiar a numToStr cuando maneje memoria dinamica
+                    // TODO: soportar el numero 0
                     char p[12];
                     int j = 0;
-
+                
                     while (num){
                         p[j] = num%10 + '0';
                         num /= 10;
