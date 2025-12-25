@@ -7,8 +7,7 @@ void printf(char* str, ...){
 
     char * txt = str;
 
-    while (*txt)
-    {
+    while (*txt){
         if(*txt == '%'){
             txt++;
             switch (*txt){
@@ -23,23 +22,15 @@ void printf(char* str, ...){
                     break;
                 case 'i':
                     int num = va_arg(args, int);
-
-                    // TODO: cambiar a numToStr cuando maneje memoria dinamica
-                    // TODO: soportar el numero 0
-                    char p[12];
-                    int j = 0;
-                
-                    while (num){
-                        p[j] = num%10 + '0';
-                        num /= 10;
-                        j++;
-                    }
-
-                    p[j] ='\0';
-
-                    strReverse((char *)&p);
+                    char p[12];                 // Como maximo puedo representar 2**32-1 numeros (entran en 12 caracteres)
+                    numToStr(num, p);
                     printVga(p, WHITE);
-
+                    break;
+                case 'x':
+                    int hex =  va_arg(args, int);
+                    char hp[12];
+                    hexToStr(hex, hp);
+                    printVga(hp, WHITE);
                     break;
                 default:
                     break;

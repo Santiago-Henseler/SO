@@ -7,8 +7,6 @@ void main(){
     clearVga();
     initInterrupts();
 
-    asm volatile("int 0x0");
-
     printf("[Info] Se entro en modo protegido y se activaron las interrupciones \n");
 
 

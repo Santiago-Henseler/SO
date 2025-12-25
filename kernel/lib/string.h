@@ -5,8 +5,11 @@
 int strLen(const char *str);
 
 // Dado un int devuelve un string terminado en \0
-// TODO
-char * numToStr(int num);
+// TODO: que devuelva char *  y que pueda printear el 0
+void numToStr(int num, char *str);
+
+// Dado un int(en hexa) devuelve un string terminado en \0  e iniciado en 0x
+void hexToStr(int num, char *str);
 
 // Dado un string lo invierte
 void strReverse(char *str);

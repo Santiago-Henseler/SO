@@ -7,7 +7,8 @@
 #include "stdarg.h"
 
 // Muestra en pantalla agregando el formato indicado 
-// Soportado:  %s => char * ;  %i => int  ;  %c => char         
+// Soportado:  %s => char * ;  %i => int  ;  %c => char
+//             %x => hexa       
 void printf(char* str, ...);
 
 // Wraper a printf para escribir un solo caracter
