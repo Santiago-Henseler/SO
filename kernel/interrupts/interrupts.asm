@@ -1,7 +1,10 @@
+extern mapPic
 global idtLoad
 idtLoad:
     mov eax, [esp+4]
     lidt [eax]
+    call mapPic
+    sti
     ret
 
 extern interrupthandler

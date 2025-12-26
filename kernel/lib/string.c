@@ -30,7 +30,7 @@ void hexToStr(int num, char *str){
     char l[6] = {'A', 'B', 'C', 'D', 'E', 'F'};
 
     while (num > 0){
-        if(num%16 > 10){
+        if(num%16 >= 10){
             str[j] = l[(num%16)%10];
         }else{
             str[j] = num%16 + '0';

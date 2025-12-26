@@ -37,6 +37,22 @@ extern void interruptHandlerNoCode28();
 extern void interruptHandlerNoCode29();
 extern void interruptHandlerNoCode30();
 extern void interruptHandlerNoCode31();
+extern void interruptHandlerNoCode32();
+extern void interruptHandlerNoCode33();
+extern void interruptHandlerNoCode34();
+extern void interruptHandlerNoCode35();
+extern void interruptHandlerNoCode36();
+extern void interruptHandlerNoCode37();
+extern void interruptHandlerNoCode38();
+extern void interruptHandlerNoCode39();
+extern void interruptHandlerNoCode40();
+extern void interruptHandlerNoCode41();
+extern void interruptHandlerNoCode42();
+extern void interruptHandlerNoCode43();
+extern void interruptHandlerNoCode44();
+extern void interruptHandlerNoCode45();
+extern void interruptHandlerNoCode46();
+extern void interruptHandlerNoCode47();
 
 
 // setea una entrada en la IDT
@@ -68,16 +84,16 @@ void initInterrupts(){
     idtSetEntry(5,  (uint32)interruptHandlerNoCode5,  0x08, IDT_FLAGS);
     idtSetEntry(6,  (uint32)interruptHandlerNoCode6,  0x08, IDT_FLAGS);
     idtSetEntry(7,  (uint32)interruptHandlerNoCode7,  0x08, IDT_FLAGS);
-    idtSetEntry(8,  (uint32)interruptHandlerCode8,  0x08, IDT_FLAGS);
+    idtSetEntry(8,  (uint32)interruptHandlerCode8,    0x08, IDT_FLAGS);
     idtSetEntry(9,  (uint32)interruptHandlerNoCode9,  0x08, IDT_FLAGS);
-    idtSetEntry(10, (uint32)interruptHandlerCode10, 0x08, IDT_FLAGS);
-    idtSetEntry(11, (uint32)interruptHandlerCode11, 0x08, IDT_FLAGS);
-    idtSetEntry(12, (uint32)interruptHandlerCode12, 0x08, IDT_FLAGS);
-    idtSetEntry(13, (uint32)interruptHandlerCode13, 0x08, IDT_FLAGS);
-    idtSetEntry(14, (uint32)interruptHandlerCode14, 0x08, IDT_FLAGS);
+    idtSetEntry(10, (uint32)interruptHandlerCode10,   0x08, IDT_FLAGS);
+    idtSetEntry(11, (uint32)interruptHandlerCode11,   0x08, IDT_FLAGS);
+    idtSetEntry(12, (uint32)interruptHandlerCode12,   0x08, IDT_FLAGS);
+    idtSetEntry(13, (uint32)interruptHandlerCode13,   0x08, IDT_FLAGS);
+    idtSetEntry(14, (uint32)interruptHandlerCode14,   0x08, IDT_FLAGS);
     idtSetEntry(15, (uint32)interruptHandlerNoCode15, 0x08, IDT_FLAGS);
     idtSetEntry(16, (uint32)interruptHandlerNoCode16, 0x08, IDT_FLAGS);
-    idtSetEntry(17, (uint32)interruptHandlerCode17, 0x08, IDT_FLAGS);
+    idtSetEntry(17, (uint32)interruptHandlerCode17,   0x08, IDT_FLAGS);
     idtSetEntry(18, (uint32)interruptHandlerNoCode18, 0x08, IDT_FLAGS);
     idtSetEntry(19, (uint32)interruptHandlerNoCode19, 0x08, IDT_FLAGS);
     idtSetEntry(20, (uint32)interruptHandlerNoCode20, 0x08, IDT_FLAGS);
@@ -92,8 +108,22 @@ void initInterrupts(){
     idtSetEntry(29, (uint32)interruptHandlerNoCode29, 0x08, IDT_FLAGS);
     idtSetEntry(30, (uint32)interruptHandlerNoCode30, 0x08, IDT_FLAGS);
     idtSetEntry(31, (uint32)interruptHandlerNoCode31, 0x08, IDT_FLAGS);
+    idtSetEntry(32, (uint32)interruptHandlerNoCode32, 0x08, IDT_FLAGS);
+    idtSetEntry(33, (uint32)interruptHandlerNoCode33, 0x08, IDT_FLAGS);
+    idtSetEntry(34, (uint32)interruptHandlerNoCode34, 0x08, IDT_FLAGS);
+    idtSetEntry(35, (uint32)interruptHandlerNoCode35, 0x08, IDT_FLAGS);
+    idtSetEntry(36, (uint32)interruptHandlerNoCode36, 0x08, IDT_FLAGS);
+    idtSetEntry(37, (uint32)interruptHandlerNoCode37, 0x08, IDT_FLAGS);
+    idtSetEntry(38, (uint32)interruptHandlerNoCode38, 0x08, IDT_FLAGS);
+    idtSetEntry(39, (uint32)interruptHandlerNoCode39, 0x08, IDT_FLAGS);
+    idtSetEntry(40, (uint32)interruptHandlerNoCode40, 0x08, IDT_FLAGS);
+    idtSetEntry(41, (uint32)interruptHandlerNoCode41, 0x08, IDT_FLAGS);
+    idtSetEntry(42, (uint32)interruptHandlerNoCode42, 0x08, IDT_FLAGS);
+    idtSetEntry(43, (uint32)interruptHandlerNoCode43, 0x08, IDT_FLAGS);
+    idtSetEntry(44, (uint32)interruptHandlerNoCode44, 0x08, IDT_FLAGS);
+    idtSetEntry(45, (uint32)interruptHandlerNoCode45, 0x08, IDT_FLAGS);
+    idtSetEntry(46, (uint32)interruptHandlerNoCode46, 0x08, IDT_FLAGS);
+    idtSetEntry(47, (uint32)interruptHandlerNoCode47, 0x08, IDT_FLAGS);
 
     idtLoad(&idt);
-
-    mapPic();
 }

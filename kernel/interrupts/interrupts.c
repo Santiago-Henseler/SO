@@ -1,46 +1,69 @@
 #include "interrupts.h"
 
-void interruptSoftware(InterruptRegisters * interruptRegs);
-void interruptHardware(InterruptRegisters * interruptRegs);
+void interruptRegsDump(InterruptRegisters * interruptRegs){
+    printf("####################################\n");
+    printf("Interrupt: %i Error: %x \n", interruptRegs->interrupt, interruptRegs->error);
 
-void (* handlers[32])(InterruptRegisters * interruptRegs) = {
+    printf("eip => %x  esp => %x  flags => %x \n", interruptRegs->eip, interruptRegs->esp, interruptRegs->eflags);
+}	
+
+void interruptSoftware(InterruptRegisters * interruptRegs){
+    interruptRegsDump(interruptRegs);
+    for(;;);
+}
+
+void interruptHardware(InterruptRegisters * interruptRegs){
+
+
+    // ACK de la interrupcion al PIC
+    outB(PIC_PRIMARY_PORT, 0x20);
+}
+
+void keyboardInterrupt(InterruptRegisters *regs){
+    
+    char key = getKeyInput();
+
+    printf("Key scancode: %c\n", key);
+
+    // ACK de la interrupcion al PIC
+    ackPic(1);
+}
+
+void clockInterrupt(InterruptRegisters * interrruptRegs){
+    // TODO: cambiar de contexto cuando haya multitask
+    // ACK de la interrupcion al PIC
+    ackPic(0);
+}
+
+void (* handlers[48])(InterruptRegisters * interruptRegs) = {
+    // Software interrupt handler
     &interruptSoftware, &interruptSoftware, &interruptSoftware,
     &interruptSoftware, &interruptSoftware, &interruptSoftware,
     &interruptSoftware, &interruptSoftware, &interruptSoftware,
     &interruptSoftware, &interruptSoftware, &interruptSoftware,
     &interruptSoftware, &interruptSoftware, &interruptSoftware,
     &interruptSoftware, &interruptSoftware, &interruptSoftware,
-    &interruptSoftware, &interruptHardware, &interruptHardware,
+    &interruptSoftware, &interruptSoftware, &interruptSoftware,
+    &interruptSoftware, &interruptSoftware, &interruptSoftware,
+    &interruptSoftware, &interruptSoftware, &interruptSoftware,
+    &interruptSoftware, &interruptSoftware, &interruptSoftware,
+    &interruptSoftware, &interruptSoftware,
+    // Hardware interrupt handler
+    &clockInterrupt, &keyboardInterrupt, &interruptHardware,
     &interruptHardware, &interruptHardware, &interruptHardware,
     &interruptHardware, &interruptHardware, &interruptHardware,
     &interruptHardware, &interruptHardware, &interruptHardware,
-    &interruptHardware, &interruptHardware
+    &interruptHardware, &interruptHardware, &interruptHardware,
+    &interruptHardware
 };
 
 void interrupthandler(InterruptRegisters * interruptRegs){
 
-    if(interruptRegs->interrupt > 32){
+    if(interruptRegs->interrupt > 47){
         printf("[Error]: interrupción no soportada\n");
         // TODO: ejecutar kenel panic
         return;
     }
 
     handlers[interruptRegs->interrupt](interruptRegs);
-}
-
-void interruptRegsDump(InterruptRegisters * interruptRegs){
-    printf("####################################\n");
-    printf("Interrupt: %i\n", interruptRegs->interrupt);
-}	
-
-void interruptSoftware(InterruptRegisters * interruptRegs){
-    interruptRegsDump(interruptRegs);
-}
-
-void interruptHardware(InterruptRegisters * interruptRegs){
-
-    interruptRegsDump(interruptRegs);
-
-    // ACK de la interrupcion al PIC
-    outB(PIC_PRIMARY_PORT, 0x20);
 }
