@@ -68,14 +68,6 @@ void initInterrupts(){
     idt.limit = sizeof(IDTEntry) * IDT_ENTRIES - 1;
     idt.base  = (uint32)&idtEntry;
 
-    for (int i = 0; i < IDT_ENTRIES; i++) {
-        idtEntry[i].offset_low  = 0;
-        idtEntry[i].offset_high = 0;
-        idtEntry[i].selector    = 0;
-        idtEntry[i].zero        = 0;
-        idtEntry[i].type_attr   = 0;
-    }
-
     idtSetEntry(0,  (uint32)interruptHandlerNoCode0,  0x08, IDT_FLAGS);
     idtSetEntry(1,  (uint32)interruptHandlerNoCode1,  0x08, IDT_FLAGS);
     idtSetEntry(2,  (uint32)interruptHandlerNoCode2,  0x08, IDT_FLAGS);

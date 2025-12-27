@@ -24,23 +24,24 @@ void interruptHardware(InterruptRegisters * interruptRegs){
     printf("interrupt %i \n", interruptRegs->interrupt);
 
     // ACK de la interrupcion al PIC
-    outB(PIC_PRIMARY_PORT, 0x20);
+    ackPic(interruptRegs->interrupt-32);
 }
 
-void keyboardInterrupt(InterruptRegisters *regs){
+void keyboardInterrupt(InterruptRegisters *interruptRegs){
     
     char key = getKeyInput();
     // TODO: en vez de printear enviar al proceso que esta corriendo
     putChar(key);
 
     // ACK de la interrupcion al PIC
-    ackPic(1);
+    ackPic(interruptRegs->interrupt-32);
 }
 
-void clockInterrupt(InterruptRegisters * interrruptRegs){
+void clockInterrupt(InterruptRegisters * interruptRegs){
     // TODO: cambiar de contexto cuando haya multitask
+    
     // ACK de la interrupcion al PIC
-    ackPic(0);
+    ackPic(interruptRegs->interrupt-32);
 }
 
 // Hardware interrupt handlers

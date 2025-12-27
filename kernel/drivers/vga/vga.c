@@ -18,8 +18,6 @@ void moverCursor(int pos){
     // Seteo para enviar parte baja de pos y lo envio
     outB(COMMAND_PORT_VGA, 15);
     outB(DATA_PORT_VGA, pos & 0x00FF);
-
-    return;
 }
 
 void printVga(const char* str, int color){
@@ -31,11 +29,11 @@ void printVga(const char* str, int color){
             continue;
         }else if(*str == KEY_TAB){
             for(int i = 0; i < 4; i++)
-                lineVacia(color);
+                caracterVacio(color);
             str++;
             continue;
         }else if(*str == KEY_ESPACIO){
-            lineVacia(color);
+            caracterVacio(color);
             str++;
             continue;
         }
@@ -55,10 +53,9 @@ void printVga(const char* str, int color){
     }
 
     moverCursor(cursorX + VGA_WIDTH*cursorY);
-    return;
 }
 
-void lineVacia(int color){
+void caracterVacio(int color){
     volatile char * videoMem = VIDEOMEM + 2*(cursorX + VGA_WIDTH*cursorY);
     videoMem[0] = ' ';
     videoMem[1] = color;
@@ -76,8 +73,6 @@ void newLineVga(){
     }
 
     moverCursor(cursorX + VGA_WIDTH*cursorY);
-
-    return;
 }
 
 void scrollUpVga(){
@@ -87,11 +82,9 @@ void scrollUpVga(){
             volatile char * videoMem = VIDEOMEM + 2*(x + VGA_WIDTH*y);
             volatile char * videoMemOld = VIDEOMEM +2*(x + VGA_WIDTH*(y+1));
             videoMem[0] = videoMemOld[0];
-            videoMem[1] = videoMemOld[1]; //TODO: chequear anda medio raro el paso de formato
+            videoMem[1] = videoMemOld[1]; 
         }
     }
-
-    return;
 }
 
 void clearVga(){
@@ -103,10 +96,6 @@ void clearVga(){
         }
     }
     
-    cursorX = 0;
-    cursorY = 0;
-    
+    cursorX = 0; cursorY = 0;
     moverCursor(0);
-
-    return;
 }
