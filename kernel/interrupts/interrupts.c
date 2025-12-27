@@ -1,6 +1,6 @@
 #include "interrupts.h"
 
-char * interruptName[32] = {
+char * interruptName[SOFTWARE_INT] = {
     "Se intento dividir por 0", "Debug int", "NMI int",
     "Breackpoint int", "Ocurrio un overflow", "Operacion se fue de rango",
     "Codigo de operación invalido", "PC sin coprocesador", "Doble fallo",
@@ -24,7 +24,7 @@ void interruptHardware(InterruptRegisters * interruptRegs){
     printf("interrupt %i \n", interruptRegs->interrupt);
 
     // ACK de la interrupcion al PIC
-    ackPic(interruptRegs->interrupt-32);
+    ackPic(interruptRegs->interrupt-SOFTWARE_INT);
 }
 
 void keyboardInterrupt(InterruptRegisters *interruptRegs){
@@ -34,18 +34,18 @@ void keyboardInterrupt(InterruptRegisters *interruptRegs){
     putChar(key);
 
     // ACK de la interrupcion al PIC
-    ackPic(interruptRegs->interrupt-32);
+    ackPic(interruptRegs->interrupt-SOFTWARE_INT);
 }
 
 void clockInterrupt(InterruptRegisters * interruptRegs){
     // TODO: cambiar de contexto cuando haya multitask
-    
+
     // ACK de la interrupcion al PIC
-    ackPic(interruptRegs->interrupt-32);
+    ackPic(interruptRegs->interrupt-SOFTWARE_INT);
 }
 
 // Hardware interrupt handlers
-void (* hardwareHandlers[PICS])(InterruptRegisters * interruptRegs) = {
+void (* hardwareHandlers[HARDWARE_INT])(InterruptRegisters * interruptRegs) = {
     &clockInterrupt, &keyboardInterrupt, &interruptHardware,
     &interruptHardware, &interruptHardware, &interruptHardware,
     &interruptHardware, &interruptHardware, &interruptHardware,
@@ -56,14 +56,14 @@ void (* hardwareHandlers[PICS])(InterruptRegisters * interruptRegs) = {
 
 void interrupthandler(InterruptRegisters * interruptRegs){
 
-    if(interruptRegs->interrupt > 47){
+    if(interruptRegs->interrupt > (SOFTWARE_INT + HARDWARE_INT)){
         printf("[Error]: interrupción no soportada\n");
         // TODO: ejecutar kenel panic
         for(;;);
     }
 
-    if(interruptRegs->interrupt > 31){
-        hardwareHandlers[interruptRegs->interrupt-32](interruptRegs);
+    if(interruptRegs->interrupt > SOFTWARE_INT-1){
+        hardwareHandlers[interruptRegs->interrupt-SOFTWARE_INT](interruptRegs);
     }else{
         interruptSoftware(interruptRegs);
     }

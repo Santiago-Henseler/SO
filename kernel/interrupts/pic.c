@@ -1,20 +1,5 @@
 #include "pic.h"
 
-void unMask(int picNum){
-    int port = (picNum >= 8) ? PIC_SECONDARY_PORT : PIC_PRIMARY_PORT;
-    int num =  (picNum >= 8) ? picNum-8 : picNum; 
-
-    uint8 mask = inB(port);
-    outB(port, mask & -(1 << num));
-}
-
-void unMaskPic(){
-
-    for(int i = 0; i < 16; i++){
-        unMask(i);
-    }
-}
-
 void mapPic(){
 
     // Habilito el modo de inicialización
@@ -36,12 +21,9 @@ void mapPic(){
     // Limpio los registros
     outB(PIC_PRIMARY_DATA, 0);
     outB(PIC_SECONDARY_DATA, 0);
-
-    unMaskPic();
 }
 
 void ackPic(int picNum){
     int port = (picNum >= 8) ? PIC_SECONDARY_PORT : PIC_PRIMARY_PORT;
-    outB(port, 0x20);
+    outB(port, FIN_INT);
 }
-

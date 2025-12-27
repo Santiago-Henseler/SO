@@ -2,6 +2,7 @@
 
 void printf(char* str, ...){
     // TODO: ver de optimizar cuando tenga memoria dinamica
+    // TODO: reemplazar printVga por syscall
     va_list args;
     va_start(args, str);
 

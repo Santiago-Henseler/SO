@@ -15,6 +15,9 @@
 #define IDT_INT_GATE  0x0E
 #define IDT_FLAGS (IDT_PRESENT | IDT_RING0 | IDT_INT_GATE)
 
+// Cantidad de interrupciones por software
+#define SOFTWARE_INT 32 
+
 // Interrupt Descriptor Table Entry
 typedef struct {
     uint16 offset_low;

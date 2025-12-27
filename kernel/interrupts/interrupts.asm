@@ -3,8 +3,8 @@ global idtLoad
 idtLoad:
     mov eax, [esp+4]
     lidt [eax]
-    call mapPic
-    sti
+    call mapPic                     ; Mapeo las interrupciones por hardware
+    sti                             ; Activo todas las interrupciones
     ret
 
 extern interrupthandler

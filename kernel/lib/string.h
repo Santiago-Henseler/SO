@@ -4,6 +4,10 @@
 // Headers extra
 #include "ascii.h"
 
+// Bases para num y hex to str
+#define HEX_BASE 16
+#define DEC_BASE 10
+
 // Dado un string terminado en \0 devuelve su largo (sin contar el \0)
 int strLen(const char *str);
 

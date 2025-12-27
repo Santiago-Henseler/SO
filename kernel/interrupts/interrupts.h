@@ -5,6 +5,7 @@
 #include "../drivers/keyboard/keyboard.h"
 #include "../lib/stdint.h"
 #include "../lib/stdio.h"
+#include "idt.h"
 #include "pic.h"
 
 typedef struct {
