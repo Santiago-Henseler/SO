@@ -5,7 +5,7 @@
 int cursorX = 0;
 int cursorY = 0;
 
-void moveCursor(int pos){
+void moverCursor(int pos){
 
     if (pos < 0)
         pos = 0;
@@ -25,9 +25,18 @@ void moveCursor(int pos){
 void printVga(const char* str, int color){
     while (*str)
     {
-        if(*str == '\n'){
-            str++;
+        if(*str == KEY_ENTER){
             newLineVga();
+            str++;
+            continue;
+        }else if(*str == KEY_TAB){
+            for(int i = 0; i < 4; i++)
+                lineVacia(color);
+            str++;
+            continue;
+        }else if(*str == KEY_ESPACIO){
+            lineVacia(color);
+            str++;
             continue;
         }
 
@@ -45,8 +54,15 @@ void printVga(const char* str, int color){
             scrollUpVga();
     }
 
-    moveCursor(cursorX + VGA_WIDTH*cursorY);
+    moverCursor(cursorX + VGA_WIDTH*cursorY);
     return;
+}
+
+void lineVacia(int color){
+    volatile char * videoMem = VIDEOMEM + 2*(cursorX + VGA_WIDTH*cursorY);
+    videoMem[0] = ' ';
+    videoMem[1] = color;
+    cursorX++;
 }
 
 void newLineVga(){
@@ -59,7 +75,7 @@ void newLineVga(){
         cursorX = 0;
     }
 
-    moveCursor(cursorX + VGA_WIDTH*cursorY);
+    moverCursor(cursorX + VGA_WIDTH*cursorY);
 
     return;
 }
@@ -90,7 +106,7 @@ void clearVga(){
     cursorX = 0;
     cursorY = 0;
     
-    moveCursor(0);
+    moverCursor(0);
 
     return;
 }

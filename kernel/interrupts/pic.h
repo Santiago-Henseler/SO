@@ -14,6 +14,9 @@
 // Port de mascara de interrupcion del pic
 #define PIC_SECONDARY_DATA 0xA1
 
+// Total de interrupciones por hardware
+#define PICS 16
+
 // Mapeo las interrupciones por hardwarer a la IDT
 void mapPic();
 

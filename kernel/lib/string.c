@@ -15,6 +15,11 @@ int strLen(const char *str){
 void numToStr(int num, char *str){
     int j = 0;
 
+    if(num == 0){
+        // TODO: sigue sin printear el 0
+        str[j] = KEY_0;
+    }
+
     while (num > 0){
         str[j] = num%10 + '0';
         num /= 10;
@@ -28,6 +33,11 @@ void numToStr(int num, char *str){
 void hexToStr(int num, char *str){
     int j = 0;
     char l[6] = {'A', 'B', 'C', 'D', 'E', 'F'};
+
+    if(num == 0){
+        // TODO: sigue sin printear el 0
+        str[j] = KEY_0;
+    }
 
     while (num > 0){
         if(num%16 >= 10){

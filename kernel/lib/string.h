@@ -1,6 +1,9 @@
 #ifndef STRING_H
 #define STRING_H
 
+// Headers extra
+#include "ascii.h"
+
 // Dado un string terminado en \0 devuelve su largo (sin contar el \0)
 int strLen(const char *str);
 

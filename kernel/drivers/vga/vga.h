@@ -3,6 +3,7 @@
 
 // Headers extra 
 #include "../io.h"
+#include "../../lib/ascii.h"
 
 // Tamaño de la pantalla 
 #define VGA_WIDTH 80
@@ -24,11 +25,5 @@ void printVga(const char* str, int color);
 
 // Limpio toda la memoria mapeada de la vga 
 void clearVga(void);
-
-// Muevo el cursor a la siguiente linea 
-void newLineVga(void);
-
-// Scroleo una linea hacia arriba sobre la memoria 
-void scrollUpVga(void);
 
 #endif

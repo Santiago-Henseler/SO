@@ -1,19 +1,27 @@
 #include "interrupts.h"
 
-void interruptRegsDump(InterruptRegisters * interruptRegs){
-    printf("####################################\n");
-    printf("Interrupt: %i Error: %x \n", interruptRegs->interrupt, interruptRegs->error);
-
-    printf("eip => %x  esp => %x  flags => %x \n", interruptRegs->eip, interruptRegs->esp, interruptRegs->eflags);
-}	
+char * interruptName[32] = {
+    "Se intento dividir por 0", "Debug int", "NMI int",
+    "Breackpoint int", "Ocurrio un overflow", "Operacion se fue de rango",
+    "Codigo de operación invalido", "PC sin coprocesador", "Doble fallo",
+    "", "TSS invalido", "Segmento no presente",
+    "Fallo de segmento del stack", "Referencia a memoria protegida", "Fallo de pagina",
+    "", "Error en la unidad de punto flotante", "",
+    "", "", "", "", "","","","","","","","","",""
+};
 
 void interruptSoftware(InterruptRegisters * interruptRegs){
-    interruptRegsDump(interruptRegs);
-    for(;;);
+    printf("####################################\n");
+    printf("Interrupt: %i Error: %x \n", interruptRegs->interrupt, interruptRegs->error);
+    printf("%s \n", interruptName[interruptRegs->interrupt]);
+    printf("eip => %x  esp => %x  flags => %x \n", interruptRegs->eip, interruptRegs->esp, interruptRegs->eflags);
+    printf("####################################\n");
+    for(;;); // TODO: kernel panic
 }
 
 void interruptHardware(InterruptRegisters * interruptRegs){
 
+    printf("interrupt %i \n", interruptRegs->interrupt);
 
     // ACK de la interrupcion al PIC
     outB(PIC_PRIMARY_PORT, 0x20);
@@ -22,8 +30,8 @@ void interruptHardware(InterruptRegisters * interruptRegs){
 void keyboardInterrupt(InterruptRegisters *regs){
     
     char key = getKeyInput();
-
-    printf("Key scancode: %c\n", key);
+    // TODO: en vez de printear enviar al proceso que esta corriendo
+    putChar(key);
 
     // ACK de la interrupcion al PIC
     ackPic(1);
@@ -35,20 +43,8 @@ void clockInterrupt(InterruptRegisters * interrruptRegs){
     ackPic(0);
 }
 
-void (* handlers[48])(InterruptRegisters * interruptRegs) = {
-    // Software interrupt handler
-    &interruptSoftware, &interruptSoftware, &interruptSoftware,
-    &interruptSoftware, &interruptSoftware, &interruptSoftware,
-    &interruptSoftware, &interruptSoftware, &interruptSoftware,
-    &interruptSoftware, &interruptSoftware, &interruptSoftware,
-    &interruptSoftware, &interruptSoftware, &interruptSoftware,
-    &interruptSoftware, &interruptSoftware, &interruptSoftware,
-    &interruptSoftware, &interruptSoftware, &interruptSoftware,
-    &interruptSoftware, &interruptSoftware, &interruptSoftware,
-    &interruptSoftware, &interruptSoftware, &interruptSoftware,
-    &interruptSoftware, &interruptSoftware, &interruptSoftware,
-    &interruptSoftware, &interruptSoftware,
-    // Hardware interrupt handler
+// Hardware interrupt handlers
+void (* hardwareHandlers[PICS])(InterruptRegisters * interruptRegs) = {
     &clockInterrupt, &keyboardInterrupt, &interruptHardware,
     &interruptHardware, &interruptHardware, &interruptHardware,
     &interruptHardware, &interruptHardware, &interruptHardware,
@@ -62,8 +58,12 @@ void interrupthandler(InterruptRegisters * interruptRegs){
     if(interruptRegs->interrupt > 47){
         printf("[Error]: interrupción no soportada\n");
         // TODO: ejecutar kenel panic
-        return;
+        for(;;);
     }
 
-    handlers[interruptRegs->interrupt](interruptRegs);
+    if(interruptRegs->interrupt > 31){
+        hardwareHandlers[interruptRegs->interrupt-32](interruptRegs);
+    }else{
+        interruptSoftware(interruptRegs);
+    }
 }
