@@ -1,5 +1,5 @@
 CFLAGS = -masm=intel -m32 -ffreestanding -fno-stack-protector -fno-pic -Wall -Wextra
-KFILES = kernel/*.c kernel/drivers/*/*.c kernel/lib/*.c kernel/interrupts/*.c
+KFILES = kernel/*.c kernel/drivers/*/*.c kernel/lib/*.c kernel/interrupts/*.c kernel/memory/*.c
 
 all: clean bootloader asm kernel.bin bootdisk run
 

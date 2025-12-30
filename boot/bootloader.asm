@@ -9,6 +9,7 @@ start:
     mov sp, 0x7C00 
     call loadKernel   
     lgdt [GDT]              ; Carga la GDT 
+    ;call getMemSize
     jmp  changeMode
     hlt
 
@@ -24,15 +25,14 @@ loadKernel:
     mov  dh, 0
     mov  dl, 0
     int  13h                 ; Interrupcion para servicios de disco de bios
-    jc   error
+    jc   .error
     mov  si, diskOk
     call  printBios
     ret 
-
-error:
-    mov si, errorMsg
-    call printBios
-    hlt
+    .error:
+        mov si, errorMsgDisk
+        call printBios
+        hlt
 
 changeMode:
     mov  eax, cr0
@@ -41,6 +41,7 @@ changeMode:
     jmp  0x08:pm
     
 %include "printBios.asm"
+%include "sistemInfo.asm"
 
 ;;;Global Descriptor Table definicion;;;
 GDT:
@@ -56,12 +57,14 @@ GDT_start:
 GDT_end:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-errorMsg: db "[Error] Hubo un problema al cargar el kernel", 0Dh, 0Ah, 0
+errorMsgDisk: db "[Error] Hubo un problema al cargar el kernel", 0Dh, 0Ah, 0
 diskOk:   db "[Info] Se cargo el kernel correctamente", 0Dh, 0Ah, 0
+
+memSize equ 0x9000          ; Donde voy a guardar en memmoria 
 
 bits 32
 pm:
-    jmp  0x08:0x10000        ; Salto a KernelEntry
+    jmp  0x08:0x10000       ; Salto a KernelEntry
 
 times 510 - ($-$$) db 0     ; Agrega la cantidad de 0 necesaria para completar el sector de disco 
 

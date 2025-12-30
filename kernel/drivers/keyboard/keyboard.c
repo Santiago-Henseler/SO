@@ -27,9 +27,8 @@ char keyCodeToChar(uint8 keyCode){
     if(mayusc && (key >= KEY_a && key <= KEY_z))
         key -= 32;                    // Resto 32 porque es la distancia de las minusculas a las mayusculas en ascii
     
-    if(mayusc && key == KEY_ñ)
+    if(mayusc && key == KEY_ñ) // TODO: NO ANDA ESTO
         key++;
-
     return key;
 }
 

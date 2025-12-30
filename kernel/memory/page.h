@@ -17,7 +17,7 @@
 // bit 2 para control (user = 1)/(kernel = 0) 
 // bit 1 para habilitar lectura y escritura
 // bit 0 presente
-int32 pageDirectory[PAGE_DIR_SIZE];
+int32 pageDirectory[PAGE_DIR_SIZE] __attribute__((aligned(4096)));
 
 // bits 31..12 de direccion de una pagina
 // bit 8 para indicar pagina global
@@ -27,7 +27,7 @@ int32 pageDirectory[PAGE_DIR_SIZE];
 // bit 2 para control (user = 1)/(kernel = 0) 
 // bit 1 para habilitar lectura y escritura
 // bit 0 presente
-int32 pageTable[PAGE_TABLE_SIZE];
+typedef int32 pageTableEntry;
 
 
 #endif

@@ -1,3 +1,4 @@
+; Pasar la direccion de lo que se va a printear en si 
 printBios:
     .loop:             
         mov  al, [si]       ; Guardo en al lo que voy a escribir en terminal

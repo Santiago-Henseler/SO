@@ -5,6 +5,7 @@
 #include "../../lib/stdint.h"
 #include "../../lib/stdbool.h"
 #include "../../lib/ascii.h"
+#include "../io.h"
 
 // Keyboard Port
 #define KEYBOARD_DATA_PORT 0x60
