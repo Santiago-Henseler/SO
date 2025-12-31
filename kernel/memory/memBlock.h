@@ -3,6 +3,7 @@
 
 // Headers extra
 #include "../lib/stdint.h"
+#include "../lib/memory.h"
 
 #define BLOCK_SIZE 4096
 #define BLOCKS  4096    // 16 MB de memoria ( por ahora)
@@ -15,7 +16,10 @@ struct memBlock{
     struct memBlock * next;
 };
 
-
+// Incia todos los bloques de memoria en una lista enlazada 
 void initMemBlock(uint32 memSize);
+
+// Devuelve un puntero al primer byte de memoria
+uint8 * getMemBlock();
 
 #endif

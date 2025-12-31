@@ -25,4 +25,6 @@ SECTIONS {
         . += 16384;
         stack_top = .;
     }
+
+    kernelEnd = .;
 }

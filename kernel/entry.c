@@ -4,6 +4,11 @@
 #include "memory/memBlock.h"
 
 
+struct a{
+    int b;
+    uint32 c;
+};
+
 void main(int16 memSize){
     clearVga();
 

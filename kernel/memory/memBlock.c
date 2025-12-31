@@ -2,11 +2,14 @@
 
 #include "../lib/stdio.h"
 
+extern uint8 kernelEnd;
+
+struct memBlock * rootMemBlock = 0;
 struct memBlock blocks[BLOCKS];
 
 void initMemBlock(uint32 memSize){
 
-    uint8 * blockDir = (uint8 * )0x0;
+    uint8 * blockDir = (uint8 * )&kernelEnd;
 
     blocks[0].addr = blockDir;
     blocks[0].next = &blocks[1];
@@ -23,6 +26,28 @@ void initMemBlock(uint32 memSize){
     }
 
     blocks[BLOCKS-1].addr = blockDir+(BLOCKS-1)*BLOCK_SIZE;
-    blocks[BLOCKS-1].next = 0;
+    blocks[BLOCKS-1].next = &blocks[0];
     blocks[BLOCKS-1].prev = &blocks[BLOCKS-2];
+
+    rootMemBlock = &blocks[0];
+}
+
+uint8 * getMemBlock(){
+
+    if(!rootMemBlock)
+        // TODO: No hay mas memoria disponible
+        return 0;
+
+    uint8 * addr = rootMemBlock->addr;
+
+    if(rootMemBlock->next == rootMemBlock){
+        rootMemBlock->next = NULL;
+        rootMemBlock->prev = NULL;
+    }else{
+        rootMemBlock->prev->next = rootMemBlock->next;
+    }
+        
+    rootMemBlock = rootMemBlock->next;
+
+    return addr;
 }
