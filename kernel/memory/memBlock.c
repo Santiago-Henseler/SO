@@ -2,24 +2,27 @@
 
 #include "../lib/stdio.h"
 
+struct memBlock blocks[BLOCKS];
+
 void initMemBlock(uint32 memSize){
 
-    void * blockDir = (void * )0x0; 
+    uint8 * blockDir = (uint8 * )0x0;
 
-    for(int i = 0; i < 10; i++){
-        printf("%x y guardo un %i\n", blockDir+i*4096, i);
+    blocks[0].addr = blockDir;
+    blocks[0].next = &blocks[1];
+    blocks[0].prev = &blocks[BLOCKS-1];
 
-        int * dir = blockDir+i*4096;
-        *dir = i;
+    for(int i = 1; i < BLOCKS-1; i++){
+
+        uint8 * dir = blockDir+i*BLOCK_SIZE;
+
+        blocks[i].addr = dir;
+        blocks[i].prev = &blocks[i-1];
+        blocks[i].next = &blocks[i+1];
+        
     }
 
-    for(int i = 0; i < 10; i++){
-
-        int * dir = blockDir+i*4096;
-
-        printf("%x y guarde un %i\n", dir, *dir);
-
-    }
-
-
+    blocks[BLOCKS-1].addr = blockDir+(BLOCKS-1)*BLOCK_SIZE;
+    blocks[BLOCKS-1].next = 0;
+    blocks[BLOCKS-1].prev = &blocks[BLOCKS-2];
 }
