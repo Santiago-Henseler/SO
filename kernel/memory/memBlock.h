@@ -4,6 +4,7 @@
 // Headers extra
 #include "../lib/stdint.h"
 #include "../lib/memory.h"
+#include "../lib/stdbool.h"
 
 #define BLOCK_SIZE 4096
 #define BLOCKS  4096    // 16 MB de memoria ( por ahora)
@@ -21,5 +22,8 @@ void initMemBlock(uint32 memSize);
 
 // Devuelve un puntero al primer byte de memoria
 uint8 * getMemBlock();
+
+// Libera la memoria del puntero dado 
+void freeMemBlock(uint8 * addr);
 
 #endif

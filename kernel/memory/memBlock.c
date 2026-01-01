@@ -4,7 +4,7 @@
 
 extern uint8 kernelEnd;
 
-struct memBlock * rootMemBlock = 0;
+struct memBlock * rootMemBlock = NULL;
 struct memBlock blocks[BLOCKS];
 
 void initMemBlock(uint32 memSize){
@@ -36,18 +36,49 @@ uint8 * getMemBlock(){
 
     if(!rootMemBlock)
         // TODO: No hay mas memoria disponible
-        return 0;
+        return NULL;
 
     uint8 * addr = rootMemBlock->addr;
 
     if(rootMemBlock->next == rootMemBlock){
         rootMemBlock->next = NULL;
         rootMemBlock->prev = NULL;
+        rootMemBlock = NULL;
     }else{
         rootMemBlock->prev->next = rootMemBlock->next;
+        rootMemBlock->next->prev = rootMemBlock->prev;
+        rootMemBlock = rootMemBlock->next;
     }
-        
-    rootMemBlock = rootMemBlock->next;
 
     return addr;
+}
+
+void freeMemBlock(uint8 * addr){
+
+    if(!addr)
+        return;
+
+    if(!rootMemBlock)
+        blocks[0].addr = addr;
+        blocks[0].next = &blocks[0];
+        blocks[0].prev = &blocks[0];
+        rootMemBlock = &blocks[0];
+        return;
+    
+    int i = 0;
+    bool found = false;
+    while(!found && i < BLOCKS){
+        if(blocks[i].addr == addr)
+            found = true;
+        else
+            i++;
+    }
+
+    if(!found)
+        return; // TODO: me pasaron un addr fuera del espacio de los bloques
+
+    blocks[i].next = rootMemBlock->next;
+    blocks[i].prev = rootMemBlock;
+    rootMemBlock->next = &blocks[i];
+
 }
