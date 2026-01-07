@@ -7,7 +7,7 @@
 #include "../lib/stdbool.h"
 
 #define BLOCK_SIZE 4096
-#define BLOCKS  10    // 16 MB de memoria ( por ahora)
+#define BLOCKS  4    // 16 MB de memoria ( por ahora)
 
 struct memBlock{
     uint32 * addr;
@@ -20,7 +20,7 @@ struct memBlock{
 // Incia todos los bloques de memoria en una lista enlazada 
 void initMemBlock(uint32 memSize);
 
-// Devuelve un puntero al primer byte de memoria
+// Devuelve un puntero al primer byte de memoria de un bloque
 void * getMemBlock();
 
 // Libera la memoria del puntero dado 

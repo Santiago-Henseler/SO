@@ -1,5 +1,7 @@
 #include "memBlock.h"
 
+#include "../lib/stdio.h"
+
 extern uint8 kernelEnd;
 
 struct memBlock * rootBlock = NULL;
@@ -12,19 +14,21 @@ void initMemBlock(uint32 memSize){
 
     struct memBlock * block = (struct memBlock *) kernelEndAddr;
 
-    block->next = ++block;
-    block->addr = blockAddr;
-    rootBlock = block;
+    printf("%x\n", blockAddr);
+
+    block[0].next = &block[1];
+    block[0].addr = blockAddr;
+    rootBlock = &block[0];
 
     for(int i = 1; i < BLOCKS-1; i++){ 
-        block->prev = --block; block++;
-        block->addr = blockAddr+i*BLOCK_SIZE;
-        block->next = ++block;
+        block[i].prev = &block[i-1];
+        block[i].addr = blockAddr+i*BLOCK_SIZE;
+        block[i].next = &block[i+1];
     }
 
-    block->prev = --block; block++;
-    block->addr = blockAddr+(BLOCKS-1)*BLOCK_SIZE;
-    block->next = rootBlock;
+    block[BLOCKS-1].prev = &block[BLOCKS-2];
+    block[BLOCKS-1].addr = blockAddr+(BLOCKS-1)*BLOCK_SIZE;
+    block[BLOCKS-1].next = &rootBlock;
     rootBlock->prev = block;
 }
 
@@ -67,6 +71,7 @@ void freeMemBlock(uint8 * addr){
             block->prev = rootBlock;
             block->addr = addr;
             rootBlock->next = block;
+            found = true;
         }
         else{
             i++;
