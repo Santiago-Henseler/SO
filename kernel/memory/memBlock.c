@@ -1,54 +1,53 @@
 #include "memBlock.h"
 
-#include "../lib/stdio.h"
-
 extern uint8 kernelEnd;
 
-struct memBlock * rootMemBlock = NULL;
-struct memBlock blocks[BLOCKS];
+struct memBlock * rootBlock = NULL;
 
 void initMemBlock(uint32 memSize){
 
-    uint8 * blockDir = (uint8 * )&kernelEnd;
+    uint8 * kernelEndAddr = ((uint8 * )&kernelEnd);
+    uint32  blockLen = (BLOCKS * sizeof(struct memBlock));
+    uint8 * blockAddr = (kernelEndAddr + blockLen);
 
-    blocks[0].addr = blockDir;
-    blocks[0].next = &blocks[1];
-    blocks[0].prev = &blocks[BLOCKS-1];
+    struct memBlock * block = (struct memBlock *) kernelEndAddr;
 
-    for(int i = 1; i < BLOCKS-1; i++){
+    block->next = ++block;
+    block->addr = blockAddr;
+    rootBlock = block;
 
-        uint8 * dir = blockDir+i*BLOCK_SIZE;
-
-        blocks[i].addr = dir;
-        blocks[i].prev = &blocks[i-1];
-        blocks[i].next = &blocks[i+1];
-        
+    for(int i = 1; i < BLOCKS-1; i++){ 
+        block->prev = --block; block++;
+        block->addr = blockAddr+i*BLOCK_SIZE;
+        block->next = ++block;
     }
 
-    blocks[BLOCKS-1].addr = blockDir+(BLOCKS-1)*BLOCK_SIZE;
-    blocks[BLOCKS-1].next = &blocks[0];
-    blocks[BLOCKS-1].prev = &blocks[BLOCKS-2];
-
-    rootMemBlock = &blocks[0];
+    block->prev = --block; block++;
+    block->addr = blockAddr+(BLOCKS-1)*BLOCK_SIZE;
+    block->next = rootBlock;
+    rootBlock->prev = block;
 }
 
-uint8 * getMemBlock(){
+void * getMemBlock(){
 
-    if(!rootMemBlock)
+    if(!rootBlock)
         // TODO: No hay mas memoria disponible
         return NULL;
 
-    uint8 * addr = rootMemBlock->addr;
+    struct memBlock * block = rootBlock;
 
-    if(rootMemBlock->next == rootMemBlock){
-        rootMemBlock->next = NULL;
-        rootMemBlock->prev = NULL;
-        rootMemBlock = NULL;
+    if(rootBlock->next == rootBlock){
+        rootBlock->next = NULL;
+        rootBlock->prev = NULL;
+        rootBlock = NULL;
     }else{
-        rootMemBlock->prev->next = rootMemBlock->next;
-        rootMemBlock->next->prev = rootMemBlock->prev;
-        rootMemBlock = rootMemBlock->next;
+        rootBlock->prev->next = rootBlock->next;
+        rootBlock->next->prev = rootBlock->prev;
+        rootBlock = rootBlock->next;
     }
+
+    void * addr = block->addr;
+    block->addr = NULL;
 
     return addr;
 }
@@ -57,28 +56,25 @@ void freeMemBlock(uint8 * addr){
 
     if(!addr)
         return;
-
-    if(!rootMemBlock)
-        blocks[0].addr = addr;
-        blocks[0].next = &blocks[0];
-        blocks[0].prev = &blocks[0];
-        rootMemBlock = &blocks[0];
-        return;
     
-    int i = 0;
-    bool found = false;
-    while(!found && i < BLOCKS){
-        if(blocks[i].addr == addr)
-            found = true;
-        else
+    uint8 * kernelEndAddr = ((uint8 * )&kernelEnd);
+    struct memBlock * block = (struct memBlock *) kernelEndAddr;
+
+    bool found = false; int i = 0;
+    while(!found && i < BLOCKS-1){
+        if(block->addr == NULL){
+            block->next = rootBlock->next;
+            block->prev = rootBlock;
+            block->addr = addr;
+            rootBlock->next = block;
+        }
+        else{
             i++;
+            block++;
+        }
     }
 
     if(!found)
-        return; // TODO: me pasaron un addr fuera del espacio de los bloques
-
-    blocks[i].next = rootMemBlock->next;
-    blocks[i].prev = rootMemBlock;
-    rootMemBlock->next = &blocks[i];
+        return; // puede llegar a pasar esto (?
 
 }
