@@ -14,8 +14,6 @@ void initMemBlock(uint32 memSize){
 
     struct memBlock * block = (struct memBlock *) kernelEndAddr;
 
-    printf("%x\n", blockAddr);
-
     block[0].next = &block[1];
     block[0].addr = blockAddr;
     rootBlock = &block[0];

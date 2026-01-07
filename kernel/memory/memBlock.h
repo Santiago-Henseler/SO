@@ -7,7 +7,7 @@
 #include "../lib/stdbool.h"
 
 #define BLOCK_SIZE 4096
-#define BLOCKS  4    // 16 MB de memoria ( por ahora)
+#define BLOCKS  4096    // 16 MB de memoria ( por ahora)
 
 struct memBlock{
     uint32 * addr;
