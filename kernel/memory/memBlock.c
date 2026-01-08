@@ -5,6 +5,7 @@
 extern uint8 kernelEnd;
 
 struct memBlock * rootBlock = NULL;
+struct memBlock * rootUsedBlock = NULL;
 
 void initMemBlock(uint32 memSize){
 
@@ -48,6 +49,13 @@ void * getMemBlock(){
         rootBlock = rootBlock->next;
     }
 
+    if(rootUsedBlock == NULL){
+        rootUsedBlock = block;
+        rootUsedBlock->next = NULL;
+    }
+    else
+        rootUsedBlock->next = block;
+
     void * addr = block->addr;
     block->addr = NULL;
 
@@ -58,26 +66,14 @@ void freeMemBlock(uint8 * addr){
 
     if(!addr)
         return;
+
+    if(rootUsedBlock == NULL)
+        return; // No hay ningun bloque en uso
     
-    uint8 * kernelEndAddr = ((uint8 * )&kernelEnd);
-    struct memBlock * block = (struct memBlock *) kernelEndAddr;
+    rootUsedBlock->addr = addr;
+    rootUsedBlock->next = !rootBlock ? rootBlock->next : NULL;
+    rootUsedBlock->prev = rootBlock;
 
-    bool found = false; int i = 0;
-    while(!found && i < BLOCKS-1){
-        if(block->addr == NULL){
-            block->next = rootBlock->next;
-            block->prev = rootBlock;
-            block->addr = addr;
-            rootBlock->next = block;
-            found = true;
-        }
-        else{
-            i++;
-            block++;
-        }
-    }
-
-    if(!found)
-        return; // puede llegar a pasar esto (?
-
+    rootBlock = rootUsedBlock; 
+    rootUsedBlock = rootUsedBlock->next;
 }

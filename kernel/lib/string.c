@@ -11,6 +11,7 @@ int strLen(const char *str){
 }
 
 void numToStr(int num, char *str){
+    // TODO: que devuelva un puntero
     int j = 0;
 
     if(num == 0){
@@ -29,6 +30,7 @@ void numToStr(int num, char *str){
 }
 
 void hexToStr(int num, char *str){
+    // TODO: que devuelva un puntero
     int j = 0;
     char letra[6] = {'A', 'B', 'C', 'D', 'E', 'F'};
 
@@ -50,7 +52,6 @@ void hexToStr(int num, char *str){
     str[j++] = '0';
     str[j++] = '\0';
     strReverse(str);
-
 }
 
 void strReverse(char *str){

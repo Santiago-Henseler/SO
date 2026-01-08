@@ -1,5 +1,7 @@
 #include "memory.h"
 
+// TODO: lista de bloques libres tambien para el free
+// TODO: implementar free, calloc 
 struct allocBlock * rootAllocBlock = NULL;
 
 struct allocBlock * newAllockBlock(){
@@ -31,9 +33,9 @@ void * getAllocBlock(uint32 size){
 
     struct allocBlock * candidate = NULL;
 
-    struct allocBlock * act = rootAllocBlock;    
+    struct allocBlock * act = rootAllocBlock;// TODO: chequear aca el act != NULL
     while(act != NULL){
-        if(act->size > realSize){
+        if(act->size >= realSize){
             // De todos los bloques agarro el mas chiquito de todos
             if(act->next == NULL)
                 candidate = act;
@@ -44,6 +46,7 @@ void * getAllocBlock(uint32 size){
     }
 
     if(candidate == NULL){
+        // si se recorrio todos y no entraba, pedir otro bloque
         struct allocBlock * new = newAllockBlock();
         new->prev = act;
         act->next = new;
@@ -52,6 +55,8 @@ void * getAllocBlock(uint32 size){
     while(candidate->size/2 > realSize){
         splitAllocBlock(candidate);
     }
+
+    // TODO: no marco como libre el bloque 
 
     return candidate->addr;
 }

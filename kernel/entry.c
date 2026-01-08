@@ -13,11 +13,5 @@ void main(int16 memSize){
 
     initMemBlock(0);
 
-    struct allocBlock * a = malloc(sizeof(int));
-
-    struct allocBlock * b = a -1;
-
-    printf("%i - %i", sizeof(int), b->size);   
-
     for (;;);
 }
