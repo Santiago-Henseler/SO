@@ -8,25 +8,13 @@
 
 #define NULL 0
 
-struct allocBlock {
-    uint32 * addr;
-    // Tamaño del bloque
-    uint32 size;
-    // Apunta al bloque anterior libre
-    struct allocBlock * prev;
-    // Apunta al bloque siguiente libre
-    struct allocBlock * next;
-}; 
-
 // Devuelve un puntero al primer byte de un bloque de tamaño indicado
 void * malloc(uint32 size);
 
+// Devuelve un puntero al primer byte de un bloque de tamaño indicado inicializado en 0
+void * calloc(uint32 size);
 
-
-
-
-
-
-
+// Libera la memoria indicada
+void free(void *);
 
 #endif

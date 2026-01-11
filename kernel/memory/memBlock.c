@@ -1,6 +1,10 @@
 #include "memBlock.h"
 
-#include "../lib/stdio.h"
+struct memBlock{
+    uint32 * addr;
+    struct memBlock * prev;
+    struct memBlock * next;
+};
 
 extern uint8 kernelEnd;
 

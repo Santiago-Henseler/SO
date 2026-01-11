@@ -33,6 +33,13 @@ void printf(char* str, ...){
                     hexToStr(hex, hp);
                     printVga(hp, WHITE);
                     break;
+                case 'b':
+                    int boolean =  va_arg(args, int);
+                    if(boolean)
+                        printVga("True", WHITE);
+                    else
+                        printVga("False", WHITE);
+                    break;
                 default:
                     break;
             }

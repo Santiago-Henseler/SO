@@ -9,14 +9,6 @@
 #define BLOCK_SIZE 4096
 #define BLOCKS  4096    // 16 MB de memoria ( por ahora)
 
-struct memBlock{
-    uint32 * addr;
-    // Apunta al bloque anterior libre
-    struct memBlock * prev;
-    // Apunta al bloque siguiente libre
-    struct memBlock * next;
-};
-
 // Incia todos los bloques de memoria en una lista enlazada 
 void initMemBlock(uint32 memSize);
 
