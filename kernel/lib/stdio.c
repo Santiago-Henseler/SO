@@ -2,7 +2,7 @@
 
 void printf(char* str, ...){
     // TODO: ver de optimizar cuando tenga memoria dinamica
-    // TODO: reemplazar printVga por syscall
+    // TODO: reemplazar printVga por syscall write (cuando exista)
     va_list args;
     va_start(args, str);
 
@@ -22,16 +22,16 @@ void printf(char* str, ...){
                     printVga(format, WHITE);
                     break;
                 case 'i':
-                    int num = va_arg(args, int);// Realmente es unsigned int lo que representa
-                    char p[12];                 // Como maximo puedo representar 2**32-1 numeros (entran en 12 caracteres)
-                    numToStr(num, p);
+                    int num = va_arg(args, int); // Realmente es unsigned int lo que representa
+                    char * p = numToStr(num);
                     printVga(p, WHITE);
+                    free(p);
                     break;
                 case 'x':
                     int hex =  va_arg(args, int);
-                    char hp[12];
-                    hexToStr(hex, hp);
+                    char * hp = hexToStr(hex);
                     printVga(hp, WHITE);
+                    free(hp);
                     break;
                 case 'b':
                     int boolean =  va_arg(args, int);

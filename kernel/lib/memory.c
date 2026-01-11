@@ -1,7 +1,5 @@
 #include "memory.h"
 
-#include "stdio.h"
-
 struct allocBlock {
     void * addr;
     uint32 size;
@@ -106,7 +104,7 @@ void * calloc(uint32 size){
 }
 
 void free(void * addr){
-    // TODO: har esto de manera mas eficiente es un asco
+    // TODO: hacer esto de manera mas eficiente es un asco
     struct allocBlock * act = rootAllocBlock;
     bool found = false;
 
@@ -130,4 +128,5 @@ void free(void * addr){
         end:    act = act->next;
     }
     
+    // TODO: si el bloque entero esta libre devolver memoria al sisop
 }

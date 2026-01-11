@@ -1,6 +1,6 @@
 #include "string.h"
 
-int strLen(const char *str){
+uint32 strLen(const char *str){
     int len = 0;    
     while (*str)
     {
@@ -10,8 +10,10 @@ int strLen(const char *str){
     return len;
 }
 
-void numToStr(int num, char *str){
-    // TODO: que devuelva un puntero
+char* numToStr(int num){
+    
+    char * str = (char *) malloc(sizeof(char) * 12); // Como maximo puedo representar 2**32-1 numeros (entran en 12 caracteres)
+
     int j = 0;
 
     if(num == 0){
@@ -20,17 +22,20 @@ void numToStr(int num, char *str){
     }
 
     while (num > 0){
-        str[j] = (num % DEC_BASE) + '0';
+        str[j] = (num % DEC_BASE) + KEY_0;
         num /= DEC_BASE;
         j++;
     }
 
     str[j] = '\0';
     strReverse(str);
+
+    return str;
 }
 
-void hexToStr(int num, char *str){
-    // TODO: que devuelva un puntero
+char * hexToStr(int num){
+    char * str = (char *) malloc(sizeof(char) * 12);
+
     int j = 0;
     char letra[6] = {'A', 'B', 'C', 'D', 'E', 'F'};
 
@@ -52,6 +57,8 @@ void hexToStr(int num, char *str){
     str[j++] = '0';
     str[j++] = '\0';
     strReverse(str);
+
+    return str;
 }
 
 void strReverse(char *str){

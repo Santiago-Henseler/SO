@@ -3,20 +3,21 @@
 
 // Headers extra
 #include "ascii.h"
+#include "memory.h"
+#include "stdint.h"
 
 // Bases para num y hex to str
 #define HEX_BASE 16
 #define DEC_BASE 10
 
 // Dado un string terminado en \0 devuelve su largo (sin contar el \0)
-int strLen(const char *str);
+uint32 strLen(const char *str);
 
 // Dado un int devuelve un string terminado en \0
-// TODO: que devuelva char *  y que pueda printear el 0
-void numToStr(int num, char *str);
+char * numToStr(int num);
 
-// Dado un int(en hexa) devuelve un string terminado en \0  e iniciado en 0x
-void hexToStr(int num, char *str);
+// Dado un int(en hexa) devuelve un string terminado en \0 e iniciado en 0x
+char * hexToStr(int num);
 
 // Dado un string lo invierte
 void strReverse(char *str);
