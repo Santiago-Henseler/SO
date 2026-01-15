@@ -13,6 +13,7 @@
 void initMemBlock(uint32 memSize);
 
 // Devuelve un puntero al primer byte de memoria de un bloque
+// Si no hay mas memoria devuelve NULL
 void * getMemBlock();
 
 // Libera la memoria del puntero dado 

@@ -5,6 +5,7 @@
 #include "../drivers/vga/vga.h"
 #include "string.h"
 #include "stdarg.h"
+#include "memory.h"
 
 // Muestra en pantalla agregando el formato indicado 
 // Soportado:  %s => char * ;  %i => int  ;  %c => char ;

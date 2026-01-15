@@ -14,6 +14,9 @@ char* numToStr(int num){
     
     char * str = (char *) malloc(sizeof(char) * 12); // Como maximo puedo representar 2**32-1 numeros (entran en 12 caracteres)
 
+    if(str == NULL)
+        return NULL;
+
     int j = 0;
 
     if(num == 0){
@@ -35,6 +38,9 @@ char* numToStr(int num){
 
 char * hexToStr(int num){
     char * str = (char *) malloc(sizeof(char) * 12);
+
+    if(str == NULL)
+        return NULL;
 
     int j = 0;
     char letra[6] = {'A', 'B', 'C', 'D', 'E', 'F'};

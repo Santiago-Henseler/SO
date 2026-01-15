@@ -1,23 +1,23 @@
 #include "memBlock.h"
 
-struct memBlock{
+typedef struct memBlock{
     uint32 * addr;
     struct memBlock * prev;
     struct memBlock * next;
-};
+} memBlock;
 
 extern uint8 kernelEnd;
 
-struct memBlock * rootBlock = NULL;
-struct memBlock * rootUsedBlock = NULL;
+memBlock * rootBlock = NULL;
+memBlock * rootUsedBlock = NULL;
 
 void initMemBlock(uint32 memSize){
 
     uint8 * kernelEndAddr = ((uint8 * )&kernelEnd);
-    uint32  blockLen = (BLOCKS * sizeof(struct memBlock));
+    uint32  blockLen = (BLOCKS * sizeof(memBlock));
     uint8 * blockAddr = (kernelEndAddr + blockLen);
 
-    struct memBlock * block = (struct memBlock *) kernelEndAddr;
+    memBlock * block = (memBlock *) kernelEndAddr;
 
     block[0].next = &block[1];
     block[0].addr = blockAddr;
@@ -41,7 +41,7 @@ void * getMemBlock(){
         // TODO: No hay mas memoria disponible
         return NULL;
 
-    struct memBlock * block = rootBlock;
+    memBlock * block = rootBlock;
 
     if(rootBlock->next == rootBlock){
         rootBlock->next = NULL;

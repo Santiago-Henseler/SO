@@ -8,13 +8,22 @@
 
 #define NULL 0
 
-// Devuelve un puntero al primer byte de un bloque de tamaño indicado
+// Devuelve un puntero al primer byte de un bloque de size bytes
+// Si no se pudo reservar memoria devuelve NULL 
 void * malloc(uint32 size);
 
-// Devuelve un puntero al primer byte de un bloque de tamaño indicado inicializado en 0
+// Devuelve un puntero al primer byte de un bloque de size bytes inicializado en 0
 void * calloc(uint32 size);
 
-// Libera la memoria indicada
-void free(void *);
+// Devuelve un puntero al primer byte de un bloque de size bytes y copia el contenido del bloque aputando por ptr
+// Libera la memoria del bloque apuntado por ptr
+void * realloc(void * ptr, uint32 size);
+
+// Libera el bloque de memoria indicado
+// Si el puntero es invalido su comportamiento no esta definido
+void free(void * ptr);
+
+// Copia size bytes del contedio de old en new 
+void memcopy(void * old, void * new, uint32 size);
 
 #endif

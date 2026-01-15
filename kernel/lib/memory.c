@@ -1,17 +1,21 @@
 #include "memory.h"
 
-struct allocBlock {
+typedef struct allockBlock {
     void * addr;
     uint32 size;
-    struct allocBlock * prev;
-    struct allocBlock * next;
+    struct allockBlock * prev;
+    struct allockBlock * next;
     bool used;
-} __attribute__((aligned(16)));
+} __attribute__((aligned(16))) allockBlock;
 
-struct allocBlock * rootAllocBlock = NULL;
+allockBlock * rootAllocBlock = NULL;
 
-struct allocBlock * newAllockBlock(){
-    struct allocBlock* new = (struct allocBlock *)getMemBlock();
+allockBlock * newAllockBlock(){
+    allockBlock* new = (allockBlock *)getMemBlock();
+
+    if(new == NULL)
+        return NULL;
+
     new->size = BLOCK_SIZE;
     new->addr = new + 1;
     new->next = NULL; new->prev = NULL;
@@ -20,8 +24,8 @@ struct allocBlock * newAllockBlock(){
     return new;
 }
 
-void splitAllocBlock(struct allocBlock * left){
-    struct allocBlock * right = (struct allocBlock *)((uint8 * )left + left->size/2); 
+void splitAllocBlock(allockBlock * left){
+    allockBlock * right = (allockBlock *)((uint8 * )left + left->size/2); 
 
     right->addr = right + 1;
     right->next = left->next;
@@ -33,22 +37,20 @@ void splitAllocBlock(struct allocBlock * left){
     right->size = left->size;
 }
 
-void joinAllocBlock(struct allocBlock * left){
-    struct allocBlock * right = left->next;
+void joinAllocBlock(allockBlock * left){
+    allockBlock * right = left->next;
 
     left->next = right->next;
     left->size += right->size;
-
 }
 
 // Devuelve un puntero al bloque libre 
 void * getAllocBlock(uint32 size){
+    uint32 realSize = size + sizeof(allockBlock);
 
-    uint32 realSize = size + sizeof(struct allocBlock);
-
-    struct allocBlock * candidate = NULL;
-    struct allocBlock * act = rootAllocBlock;
-    struct allocBlock * last = NULL;
+    allockBlock * candidate = NULL;
+    allockBlock * act = rootAllocBlock;
+    allockBlock * last = NULL;
 
     while(act != NULL){
         if(act->size >= realSize){
@@ -63,20 +65,31 @@ void * getAllocBlock(uint32 size){
     }
 
     if(candidate == NULL){
-        // si se recorrio todos y no entraba, pedir otro bloque
-        struct allocBlock * new = newAllockBlock();
+        // si se recorrio todos y no entraba, pido otro bloque
+        allockBlock * new = newAllockBlock();
+        if(new == NULL)
+            return NULL;
         new->prev = last;
-        //new->next = rootAllocBlock;
         last->next = new;
         candidate = new;
     }
     
     while(candidate->size/2 >= realSize){
+        // Del bloque mas chico que hay lo ajusto lo mejor posible al tamaño pedido
         splitAllocBlock(candidate);
     }
 
     candidate->used = true;
     return candidate->addr;
+}
+
+void memcopy(void * old, void * new, uint32 size){
+
+    uint8 * newB = (uint8 *) new;
+    uint8 * oldB = (uint8 *) old;
+
+    for(int i = 0; i < size; i++)
+        newB[i] = oldB[i]; 
 }
 
 void * malloc(uint32 size){
@@ -85,9 +98,6 @@ void * malloc(uint32 size){
         // TODO: Deberia poder reservar secciones de memoria mas grandes
         return NULL;
     }
-
-    if(!rootAllocBlock)
-        rootAllocBlock = newAllockBlock();
 
     return getAllocBlock(size);
 }
@@ -103,29 +113,44 @@ void * calloc(uint32 size){
     return addr;
 }
 
-void free(void * addr){
-    // TODO: hacer esto de manera mas eficiente es un asco
-    struct allocBlock * act = rootAllocBlock;
-    bool found = false;
+void * realloc(void * ptr, uint32 size){
+    if(ptr == NULL)
+        return NULL;
 
-    while(act != NULL && !found){
-        if(act->addr == addr){
-            found = true;
-            act->used = false;
-        }
-        act = act->next;
-    }
+    allockBlock * old = ((allockBlock *)ptr)-1;
+    uint32 realSize = size + sizeof(allockBlock);
 
-    act = rootAllocBlock;
+    if(old->size >= realSize)
+        return ptr;
+
+
+    void * new = malloc(size);
+
+    memcopy(ptr, new, old->size);
+
+    free(ptr);
+
+    return new;
+}
+
+void free(void * ptr){
+    if(ptr == NULL)
+        return;
+
+    allockBlock * free = ptr-1;
+    free->used = false;
+
+    // Vuelvo a unir los bloques que estan libres
+    allockBlock * act = rootAllocBlock;
     while (act != NULL)
     {
-        struct allocBlock * next = act->next;
+        allockBlock * next = act->next;
         if(next == NULL)
             goto end;
         if(act->size == next->size && !act->used && !next->used)
-            joinAllocBlock(act);
-        else 
-        end:    act = act->next;
+            joinAllocBlock(act); 
+        end:    
+            act = next;
     }
     
     // TODO: si el bloque entero esta libre devolver memoria al sisop
