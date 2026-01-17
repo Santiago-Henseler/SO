@@ -83,13 +83,14 @@ void * getAllocBlock(uint32 size){
     return candidate->addr;
 }
 
-void memcopy(void * old, void * new, uint32 size){
+void memCopy(void * src, void * dest, uint32 size){
 
-    uint8 * newB = (uint8 *) new;
-    uint8 * oldB = (uint8 *) old;
+    uint8 * destB = (uint8 *) dest;
+    uint8 * srcB = (uint8 *) src;
 
     for(int i = 0; i < size; i++)
-        newB[i] = oldB[i]; 
+        destB[i] = srcB[i]; 
+
 }
 
 void * malloc(uint32 size){
@@ -126,7 +127,7 @@ void * realloc(void * ptr, uint32 size){
 
     void * new = malloc(size);
 
-    memcopy(ptr, new, old->size);
+    memCopy(ptr, new, old->size);
 
     free(ptr);
 

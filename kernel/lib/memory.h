@@ -24,6 +24,6 @@ void * realloc(void * ptr, uint32 size);
 void free(void * ptr);
 
 // Copia size bytes del contedio de old en new 
-void memcopy(void * old, void * new, uint32 size);
+void memCopy(void * src, void * dest, uint32 size);
 
 #endif

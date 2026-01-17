@@ -8,10 +8,8 @@ void main(int16 memSize){
     clearVga();
 
     initInterrupts();
-    printf("[Info] Se entro en modo protegido y se activaron las interrupciones \n");
-
     initMemBlock(0);
-    printf("[Info] Se inicio la memoria en bloques (16 MB) \n");
+    printf("[Info] Se entro en modo protegido y se activaron las interrupciones \n");
 
     for (;;);
 }
