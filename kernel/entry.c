@@ -3,24 +3,14 @@
 #include "interrupts/idt.h"
 #include "memory/memBlock.h"
 
-#include "lib/memory.h"
-
-struct allocBlock {
-    void * addr;
-    uint32 size;
-    struct allocBlock * prev;
-    struct allocBlock * next;
-    bool used;
-} __attribute__((aligned(16)));
-
 void main(int16 memSize){
     clearVga();
 
     initInterrupts();
-    printf("[Info] Se entro en modo protegido y se activaron las interrupciones \n");
+    initMemBlock(memSize);
 
-    initMemBlock(0);
-    printf("[Info] Se inicio la memoria en bloques (16 MB) \n");
+    printf("[Info] Se entro en modo protegido y se activaron las interrupciones \n");
+    printf("[Info] Se inicio la memoria en bloques, espacio disponible: %i(16 MB) \n", BLOCK_SIZE * BLOCKS);
 
     for (;;);
 }

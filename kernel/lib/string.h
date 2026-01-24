@@ -3,7 +3,7 @@
 
 // Headers extra
 #include "ascii.h"
-#include "memory.h"
+#include "stdmem.h"
 #include "stdint.h"
 
 // Bases para num y hex to str
@@ -14,7 +14,7 @@
 uint32 strLen(const char *str);
 
 // Dado un int devuelve un string terminado en \0
-char * numToStr(int num);
+char * intToStr(int num);
 
 // Dado un int(en hexa) devuelve un string terminado en \0 e iniciado en 0x
 char * hexToStr(int num);

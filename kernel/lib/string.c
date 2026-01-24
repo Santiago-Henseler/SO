@@ -10,15 +10,24 @@ uint32 strLen(const char *str){
     return len;
 }
 
-char* numToStr(int num){
+char* intToStr(int num){
     
     char * str = (char *) malloc(sizeof(char) * 12); // Como maximo puedo representar 2**32-1 numeros (entran en 12 caracteres)
 
-    int j = 0;
+    if(str == NULL)
+        return NULL;
 
+    int j = 0;
     if(num == 0){
-        // TODO: sigue sin printear el 0
-        str[j] = KEY_0;
+        str[j++] = KEY_0;
+        str[j] = '\0';
+        return str;
+    }
+
+    bool neg = false;
+    if(num < 0){
+       num = ~(num)+1;
+       neg = true;
     }
 
     while (num > 0){
@@ -26,6 +35,9 @@ char* numToStr(int num){
         num /= DEC_BASE;
         j++;
     }
+    
+    if(neg)
+        str[j++] = '-';
 
     str[j] = '\0';
     strReverse(str);
@@ -36,12 +48,16 @@ char* numToStr(int num){
 char * hexToStr(int num){
     char * str = (char *) malloc(sizeof(char) * 12);
 
+    if(str == NULL)
+        return NULL;
+
     int j = 0;
     char letra[6] = {'A', 'B', 'C', 'D', 'E', 'F'};
 
     if(num == 0){
-        // TODO: sigue sin printear el 0
-        str[j] = KEY_0;
+        str[j++] = KEY_0;
+        str[j] = '\0';
+        return str;
     }
 
     while (num > 0){

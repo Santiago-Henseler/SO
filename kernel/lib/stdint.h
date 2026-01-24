@@ -11,4 +11,6 @@ typedef unsigned short uint16;
 typedef unsigned int   uint32;
 typedef unsigned long long uint64;
 
+#define ALIGN(addr, align) (((int)(addr) + ((align) - 1)) & ~((align) - 1))
+
 #endif

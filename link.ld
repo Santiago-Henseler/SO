@@ -14,17 +14,15 @@ SECTIONS {
         *(.data*) 
     }
 
-    .bss (NOLOAD) : {
+    .bss : {
         *(COMMON)
         *(.bss*)
-    }
-
-    .stack (NOLOAD) : {
         . = ALIGN(16);
         stack_bottom = .;
         . += 16384;
         stack_top = .;
     }
 
+    . = ALIGN(16);
     kernelEnd = .;
 }

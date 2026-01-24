@@ -14,12 +14,12 @@ start:
     hlt
 
 loadKernel:
-    mov  ax, 0x1000          ; A donde voy a levantar en ram el sector leido (0x10000)
+    mov  ax, 0x1000          ; A donde voy a levantar en ram el sector leido
     mov  es, ax
     xor  bx, bx
  
     mov  ah, 02h             ; Indico que quiero leer un sector del disco
-    mov  al, 20              ; Cantidad de Sectores
+    mov  al, 128              ; Cantidad de Sectores
     mov  ch, 0
     mov  cl, 2               ; Sector del disco a leer
     mov  dh, 0

@@ -20,8 +20,8 @@ void interruptSoftware(InterruptRegisters * interruptRegs){
 }
 
 void interruptHardware(InterruptRegisters * interruptRegs){
-
-    printf("interrupt %i \n", interruptRegs->interrupt);
+    
+    printf("Interrupt: %i \n", interruptRegs->interrupt);
 
     // ACK de la interrupcion al PIC
     ackPic(interruptRegs->interrupt-SOFTWARE_INT);

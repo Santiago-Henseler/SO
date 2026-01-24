@@ -1,83 +1,74 @@
 #include "memBlock.h"
 
-struct memBlock{
-    uint32 * addr;
-    struct memBlock * prev;
+typedef struct memBlock{
+    void * addr;
     struct memBlock * next;
-};
+} memBlock;
 
 extern uint8 kernelEnd;
 
-struct memBlock * rootBlock = NULL;
-struct memBlock * rootUsedBlock = NULL;
+memBlock * rootBlock = NULL;
+memBlock * rootUsedBlock = NULL;
 
 void initMemBlock(uint32 memSize){
 
     uint8 * kernelEndAddr = ((uint8 * )&kernelEnd);
-    uint32  blockLen = (BLOCKS * sizeof(struct memBlock));
-    uint8 * blockAddr = (kernelEndAddr + blockLen);
+    uint32  blockLen = (BLOCKS * sizeof(memBlock));
+    uint8 * blockAddr = ALIGN(kernelEndAddr + blockLen, 16);
 
-    struct memBlock * block = (struct memBlock *) kernelEndAddr;
+    memBlock * block = (memBlock *) kernelEndAddr;
 
     block[0].next = &block[1];
     block[0].addr = blockAddr;
-    rootBlock = &block[0];
 
     for(int i = 1; i < BLOCKS-1; i++){ 
-        block[i].prev = &block[i-1];
-        block[i].addr = blockAddr+i*BLOCK_SIZE;
+        block[i].addr = blockAddr + i*(BLOCK_SIZE);
         block[i].next = &block[i+1];
     }
 
-    block[BLOCKS-1].prev = &block[BLOCKS-2];
     block[BLOCKS-1].addr = blockAddr+(BLOCKS-1)*BLOCK_SIZE;
-    block[BLOCKS-1].next = &rootBlock;
-    rootBlock->prev = block;
+    block[BLOCKS-1].next = NULL;
+
+    rootBlock = &block[0];
 }
 
 void * getMemBlock(){
 
-    if(!rootBlock)
-        // TODO: No hay mas memoria disponible
+    if(!rootBlock) // TODO: No hay mas memoria disponible
         return NULL;
 
-    struct memBlock * block = rootBlock;
+    memBlock * block = rootBlock;
 
-    if(rootBlock->next == rootBlock){
-        rootBlock->next = NULL;
-        rootBlock->prev = NULL;
-        rootBlock = NULL;
-    }else{
-        rootBlock->prev->next = rootBlock->next;
-        rootBlock->next->prev = rootBlock->prev;
-        rootBlock = rootBlock->next;
-    }
+    rootBlock = rootBlock->next;
+    block->next = rootUsedBlock; 
+    rootUsedBlock = block;
 
-    if(rootUsedBlock == NULL){
-        rootUsedBlock = block;
-        rootUsedBlock->next = NULL;
-    }
-    else
-        rootUsedBlock->next = block;
-
-    void * addr = block->addr;
-    block->addr = NULL;
-
-    return addr;
+    return block->addr;
 }
 
-void freeMemBlock(uint8 * addr){
+void freeMemBlock(void * addr){
 
     if(!addr)
         return;
 
-    if(rootUsedBlock == NULL)
+    if(!rootUsedBlock)
         return; // No hay ningun bloque en uso
     
-    rootUsedBlock->addr = addr;
-    rootUsedBlock->next = !rootBlock ? rootBlock->next : NULL;
-    rootUsedBlock->prev = rootBlock;
-
-    rootBlock = rootUsedBlock; 
-    rootUsedBlock = rootUsedBlock->next;
+    memBlock * prev = NULL;
+    memBlock * act = rootUsedBlock;
+    bool found = false;
+    
+    while(act != NULL && !found){
+        if(act->addr == addr){
+            if(prev != NULL)
+                prev->next = act->next;
+            else
+                rootUsedBlock = act->next;
+            act->next = rootBlock;
+            rootBlock = act;
+            found = true;
+        }   
+        prev = act;
+        act = act->next;
+    }
 }
