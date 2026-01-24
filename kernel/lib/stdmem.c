@@ -171,15 +171,7 @@ void free(void * ptr) {
 
         act = act->next;
     }
-}
 
-void viewMem(){
-    printf("VIEW MEM\n");
-    allockBlock * b = rootAllocBlock;
-
-    while (b != NULL)
-    {
-        printf("addr: %x size: %i used: %b \n", b->addr, b->size - sizeof(allockBlock), b->used);
-        b = b->next;
-    }  
+    if(act->size == BLOCK_SIZE)
+        freeMemBlock(act);
 }

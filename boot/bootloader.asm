@@ -14,6 +14,7 @@ start:
     hlt
 
 loadKernel:
+; TODO: deberia de cargar el kernel en 0x100000
     mov  ax, 0x1000          ; A donde voy a levantar en ram el sector leido
     mov  es, ax
     xor  bx, bx

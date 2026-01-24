@@ -43,6 +43,13 @@ void printf(char* str, ...){
                     i += strLen(p); memLen += strLen(p);
                     free(p);
                     break;
+                case 'u':
+                    int uNum = va_arg(args, int);
+                    char * u = uIntToStr(uNum);
+                    appendStr(u, &txt, memLen, i);
+                    i += strLen(u); memLen += strLen(u);
+                    free(u);
+                    break;
                 case 'x':
                     int hex =  va_arg(args, int);
                     char * hp = hexToStr(hex);

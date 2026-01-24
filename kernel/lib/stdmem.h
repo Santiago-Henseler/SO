@@ -29,6 +29,4 @@ void memCopy(void * src, void * dest, uint32 size);
 // Sete size bytes con value
 void memSet(void * dst, uint8 value, uint32 size);
 
-
-void viewMem();
 #endif
