@@ -2,9 +2,9 @@
 #define INTERRUPTS_H
 
 // Headers extra
-#include "../drivers/keyboard/keyboard.h"
-#include "../lib/stdint.h"
-#include "../lib/stdio.h"
+#include <keyboard.h>
+#include <stdint.h>
+#include <stdio.h>
 #include "idt.h"
 #include "pic.h"
 

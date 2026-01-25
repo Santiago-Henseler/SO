@@ -1,7 +1,7 @@
-#include "drivers/vga/vga.h"
-#include "lib/stdio.h"
-#include "interrupts/idt.h"
-#include "memory/memBlock.h"
+#include <vga.h>
+#include <stdio.h>
+#include <idt.h>
+#include <block.h>
 
 void main(int16 memSize){
     clearVga();

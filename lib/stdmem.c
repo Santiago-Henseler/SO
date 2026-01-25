@@ -12,7 +12,7 @@ typedef struct allockBlock {
 allockBlock * rootAllocBlock = NULL;
 
 allockBlock * newAllockBlock(){
-    allockBlock* new = (allockBlock *)getMemBlock();
+    allockBlock* new = (allockBlock *)getBlock();
     if(new == NULL) 
         return NULL;
 
@@ -173,5 +173,5 @@ void free(void * ptr) {
     }
 
     if(act->size == BLOCK_SIZE)
-        freeMemBlock(act);
+        freeBlock(act);
 }

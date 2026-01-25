@@ -2,9 +2,9 @@
 #define STDMEM_H
 
 // Headers extra
-#include "stdio.h"
-#include "stdbool.h"
-#include "../memory/memBlock.h"
+#include <stdio.h>
+#include <stdbool.h>
+#include <block.h>
 
 #define NULL 0
 

@@ -2,8 +2,8 @@
 #define IDT_H
 
 // Headres extra
-#include "../lib/stdint.h"
-#include "pic.h"
+#include <stdint.h>
+#include <pic.h>
 
 // Cantidad de entradas
 #define IDT_ENTRIES 256
@@ -14,9 +14,6 @@
 #define IDT_RING3     0x60
 #define IDT_INT_GATE  0x0E
 #define IDT_FLAGS (IDT_PRESENT | IDT_RING0 | IDT_INT_GATE)
-
-// Cantidad de interrupciones por software
-#define SOFTWARE_INT 32 
 
 // Interrupt Descriptor Table Entry
 typedef struct {

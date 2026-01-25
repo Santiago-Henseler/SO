@@ -10,6 +10,8 @@
 // Cantidad de entradas en la page table
 #define PAGE_TABLE_SIZE 1024
 
+#define PAGE_SIZE 4096
+
 // bits 31..12 de direccion de la page table entry 
 // bit 7 para tamaño de pagina (0 = 4Kb)  
 // bit 4 para no cachear la pagina

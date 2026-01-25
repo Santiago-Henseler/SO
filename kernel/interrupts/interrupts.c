@@ -16,7 +16,7 @@ void interruptSoftware(InterruptRegisters * interruptRegs){
     printf("%s \n", interruptName[interruptRegs->interrupt]);
     printf("eip => %x  esp => %x  flags => %x \n", interruptRegs->eip, interruptRegs->esp, interruptRegs->eflags);
 
-    for(;;); // TODO: kernel panic
+    for(;;); // TODO: Notificar y cambiar de proceso
 }
 
 void interruptHardware(InterruptRegisters * interruptRegs){
@@ -58,7 +58,6 @@ void interrupthandler(InterruptRegisters * interruptRegs){
 
     if(interruptRegs->interrupt > (SOFTWARE_INT + HARDWARE_INT)){
         printf("[Error]: interrupción no soportada\n");
-        // TODO: ejecutar kenel panic
         for(;;);
     }
 

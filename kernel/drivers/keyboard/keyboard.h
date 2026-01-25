@@ -2,9 +2,9 @@
 #define KEYBOARD_H
 
 // Headers extra
-#include "../../lib/stdint.h"
-#include "../../lib/stdbool.h"
-#include "../../lib/ascii.h"
+#include <stdint.h>
+#include <stdbool.h>
+#include <ascii.h>
 #include "../io.h"
 
 // Keyboard Port

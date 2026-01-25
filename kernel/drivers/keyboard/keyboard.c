@@ -13,22 +13,23 @@ char keyCodeMin[58] = {
 };
 
 char keyCodeToChar(uint8 keyCode){
-    if(keyCode == KEY_MAYS_DER_D || keyCode == KEY_MAYS_IZQ_D)
+    if(keyCode == KEY_MAYS_DER_D || keyCode == KEY_MAYS_IZQ_D) // TODO: el bloqMays deberia existir
         mayusc = true;
 
     if(keyCode == KEY_MAYS_IZQ_U || keyCode == KEY_MAYS_DER_U)
         mayusc = false;
 
-    if(keyCode > 60)                   // No le doy bola a las keyDown
+    if(mayusc && keyCode == 39) 
+        return KEY_ñ +1;
+
+    if(keyCode > 60)                   // TODO: No le doy bola a las keyDown
         return 0; 
 
     char key = keyCodeMin[keyCode];
 
     if(mayusc && (key >= KEY_a && key <= KEY_z))
         key -= 32;                    // Resto 32 porque es la distancia de las minusculas a las mayusculas en ascii
-    
-    if(mayusc && key == KEY_ñ) // TODO: NO ANDA ESTO
-        key++;
+
     return key;
 }
 

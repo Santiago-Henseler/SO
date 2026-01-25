@@ -22,6 +22,10 @@ void printf(char* str, ...){
     txt[i] = '\0';
 
     while (*str){
+        if(txt == NULL)
+            // TODO: kernel panic
+            return;
+
         if(*str == '%'){
             str++;
             switch (*str){

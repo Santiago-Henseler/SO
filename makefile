@@ -1,5 +1,6 @@
-CFLAGS = -masm=intel -m32 -ffreestanding -fno-stack-protector -fno-pic -Wall -Wextra -g
-KERNELFILES = kernel/*.c kernel/drivers/*/*.c kernel/lib/*.c kernel/interrupts/*.c kernel/memory/*.c
+CFLAGS = -masm=intel -m32 -ffreestanding -nostdlib -nostdinc -fno-stack-protector -fno-pic -Wall -Wextra -g
+LIBS = -Ilib -Ikernel/drivers/vga -Ikernel/drivers/keyboard -Ikernel/memory -Ikernel/interrupts
+KERNELFILES = kernel/*.c kernel/drivers/*/*.c lib/*.c kernel/interrupts/*.c kernel/memory/*.c
 
 all: clean bootloader asm kernel.bin bootdisk run
 debug: clean bootloader asm kernel.bin bootdisk gdb
@@ -17,7 +18,7 @@ asm:
 	nasm -f elf32 kernel/interrupts/interrupts.asm -o asmInterrupts.o
 
 kernel.bin:	
-	gcc $(CFLAGS) -I kernel/ -c $(KERNELFILES)
+	gcc $(CFLAGS) $(LIBS) -c $(KERNELFILES)
 	ld -m elf_i386 -T link.ld *.o -o kernel.elf
 	objcopy -O binary kernel.elf kernel.bin
 	

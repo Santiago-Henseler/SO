@@ -2,7 +2,7 @@
 #define IO_H
 
 // Headers extra
-#include "../lib/stdint.h"
+#include <stdint.h>
 
 // Envia 1 byte al puerto I/O indicado
 void outB(unsigned short port, unsigned char data);

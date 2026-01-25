@@ -3,7 +3,7 @@
 
 // Headers extra 
 #include "../io.h"
-#include "../../lib/ascii.h"
+#include <ascii.h>
 
 // Tamaño de la pantalla 
 #define VGA_WIDTH 80

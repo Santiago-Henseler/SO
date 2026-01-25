@@ -1,18 +1,22 @@
-#include "memBlock.h"
+#include "block.h"
 
 typedef struct memBlock{
     void * addr;
     struct memBlock * next;
 } memBlock;
 
-extern uint8 kernelEnd;
+//extern uint8 kernelEnd; TODO: deberia utilizar esto
+#define kernelEnd 0x100000
 
 memBlock * rootBlock = NULL;
 memBlock * rootUsedBlock = NULL;
 
+// Utilizo la primera seccion de memoria para guardar los structs
+// organizados en 2 listas discriminando libres y usados
+// para cuando se haga free del bloque chequear que el puntero dado sea correcto 
 void initMemBlock(uint32 memSize){
 
-    uint8 * kernelEndAddr = ((uint8 * )&kernelEnd);
+    uint8 * kernelEndAddr = ((uint8 * )kernelEnd);
     uint32  blockLen = (BLOCKS * sizeof(memBlock));
     uint8 * blockAddr = ALIGN(kernelEndAddr + blockLen, 16);
 
@@ -24,6 +28,7 @@ void initMemBlock(uint32 memSize){
     for(int i = 1; i < BLOCKS-1; i++){ 
         block[i].addr = blockAddr + i*(BLOCK_SIZE);
         block[i].next = &block[i+1];
+        memSet(block[i].addr, 1, BLOCK_SIZE);
     }
 
     block[BLOCKS-1].addr = blockAddr+(BLOCKS-1)*BLOCK_SIZE;
@@ -32,7 +37,7 @@ void initMemBlock(uint32 memSize){
     rootBlock = &block[0];
 }
 
-void * getMemBlock(){
+void * getBlock(){
 
     if(!rootBlock) // TODO: No hay mas memoria disponible
         return NULL;
@@ -46,14 +51,11 @@ void * getMemBlock(){
     return block->addr;
 }
 
-void freeMemBlock(void * addr){
+void freeBlock(void * addr){
 
     if(!addr)
         return;
 
-    if(!rootUsedBlock)
-        return; // No hay ningun bloque en uso
-    
     memBlock * prev = NULL;
     memBlock * act = rootUsedBlock;
     bool found = false;
