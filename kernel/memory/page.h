@@ -70,4 +70,7 @@ typedef uint32 pageTableEntry;
 // la memoria de video y los structs de memoria en bloques
 void initPageTable();
 
+// Devuelve un puntero a una direccion de memoria virtual paginada
+void * getPage();
+
 #endif

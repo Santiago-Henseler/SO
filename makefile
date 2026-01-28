@@ -16,6 +16,7 @@ asm:
 	nasm -f elf32 kernel/kernelEntry.asm -o kernelEntry.o
 	nasm -f elf32 kernel/drivers/io.asm -o io.o
 	nasm -f elf32 kernel/interrupts/interrupts.asm -o asmInterrupts.o
+	nasm -f elf32 kernel/memory/page.asm -o asmPage.o
 
 
 kernel.bin:	

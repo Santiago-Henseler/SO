@@ -9,12 +9,10 @@ void main(int16 memSize){
 
     initInterrupts();
     initMemBlock(memSize);
-
-    printf("[Info] Se entro en modo protegido y se activaron las interrupciones \n");
-    printf("[Info] Se inicio la memoria en bloques, espacio disponible: %i(16 MB) \n", BLOCK_SIZE * BLOCKS);
-
     initPageTable();
 
+    printf("[Info] Se entro en modo protegido y se activaron las interrupciones \n");
+    printf("[Info] Se inicio la memoria en bloques, espacio disponible: %i(16 MB) \n", PAGE_SIZE * BLOCKS);
     printf("[info] Se inicio la memoria paginada\n");
 
     for (;;);

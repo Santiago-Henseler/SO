@@ -5,32 +5,47 @@
 extern uint8 kernelEnd;
 extern uint8 kernelStart;
 
+extern void setPageDirectory(pageDirectoryEntry* pd);
+extern void startPagination();
+
 pageDirectoryEntry * pageDirectory = PAGE_FLAG_NO_PRESENT;  
 
 void initPageTable(){
-    pageDirectory = ALIGN(getBlock(), 16);
+
+    pageDirectory = ALIGN(getBlock(), PAGE_SIZE);
 
     for(int i = 0; i < PAGE_DIR_SIZE; i++){
         pageDirectory[i] = PAGE_FLAG_NO_PRESENT; 
     }
 
-    for (uint32 addr = &kernelStart; addr < &kernelEnd; addr += 0x1000) {
-        mapPage((void*)addr, (void*)addr, PAGE_FLAG_KERNEL | PAGE_FLAG_GLOBAL | PAGE_FLAG_WRITE);
+    for (uint32 addr = &kernelStart; addr < &kernelEnd; addr += PAGE_SIZE) {
+        mapPage((void*)addr, (void*)addr, PAGE_FLAG_KERNEL  | PAGE_FLAG_WRITE | PAGE_FLAG_PRESENT);
     }
 
     mapPage(MEM_VGA, MEM_VGA, PAGE_FLAG_KERNEL | PAGE_FLAG_WRITE | PAGE_FLAG_PRESENT);
+
+    for (uint32 addr = BLOCK_START; addr < BLOCK_END; addr += PAGE_SIZE) {
+        mapPage((void*)addr, (void*)addr, PAGE_FLAG_KERNEL  | PAGE_FLAG_WRITE | PAGE_FLAG_PRESENT);
+    }
+
+    mapPage(pageDirectory, pageDirectory, PAGE_FLAG_WRITE  | PAGE_FLAG_PRESENT| PAGE_FLAG_KERNEL);
+
+    setPageDirectory(pageDirectory);
+    startPagination();
 }
 
 pageTableEntry * newPageTable(){
 
     pageTableEntry * pageTable = (pageTableEntry *)ALIGN(getBlock(), 4096);
 
+    mapPage(pageTable, pageTable,PAGE_FLAG_PRESENT | PAGE_FLAG_WRITE );
+
     for(int i = 0; i < PAGE_TABLE_SIZE; i++){
         pageTable[i] = PAGE_FLAG_NO_PRESENT; 
     }
 
     return pageTable;
-}
+}  
 
 void mapPage(void *pa, void *va, uint32 flags){
 
@@ -45,7 +60,16 @@ void mapPage(void *pa, void *va, uint32 flags){
     pageTableEntry *pageTable = (pageTableEntry *)(pageDirectory[pageDirPos] & PDE_TO_PT_MASK);
 
     if (pageTable[pageTablePos] & PAGE_FLAG_PRESENT)
-        return; // TODO: no existe tabla para esa pagina
+        return; // TODO: esta pagina fue ya mapeada
 
     pageTable[pageTablePos] = ((uint32)pa & PA_TO_ADDR_MASK) | flags;
+}
+
+void * getPage(){
+
+    void * addr = ALIGN(getBlock(), PAGE_SIZE);
+
+    mapPage(addr, addr, PAGE_FLAG_PRESENT | PAGE_FLAG_WRITE | PAGE_FLAG_WT);
+
+    return addr;
 }

@@ -7,16 +7,16 @@ typedef struct allockBlock {
     uint32 size;
     struct allockBlock * next;
     bool used;
-}  allockBlock __attribute__((aligned(16)));
+}  allockBlock __attribute__((aligned(PAGE_SIZE)));
 
 allockBlock * rootAllocBlock = NULL;
 
 allockBlock * newAllockBlock(){
-    allockBlock* new = (allockBlock *)getBlock();
+    allockBlock* new = (allockBlock *)getPage();
     if(new == NULL) 
         return NULL;
 
-    new->size = BLOCK_SIZE;
+    new->size = PAGE_SIZE;
     new->addr = (void *)(new + 1);
     new->next = NULL;
     new->used = false;
@@ -102,7 +102,7 @@ void memSet(void * dst, uint8 value, uint32 size){
 
 void * malloc(uint32 size){
 
-    if(size > BLOCK_SIZE){
+    if(size > PAGE_SIZE){
         // TODO: Deberia poder reservar secciones de memoria mas grandes
         return NULL;
     }
@@ -172,6 +172,6 @@ void free(void * ptr) {
         act = act->next;
     }
 
-    if(act->size == BLOCK_SIZE)
+    if(act->size == PAGE_SIZE)
         freeBlock(act);
 }

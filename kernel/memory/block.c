@@ -1,10 +1,5 @@
 #include "block.h"
 
-typedef struct memBlock{
-    void * addr;
-    struct memBlock * next;
-} memBlock;
-
 //extern uint8 kernelEnd; TODO: deberia utilizar esto
 #define kernelEnd 0x100000
 
@@ -18,7 +13,7 @@ void initMemBlock(uint32 memSize){
 
     uint8 * kernelEndAddr = ((uint8 * )kernelEnd);
     uint32  blockLen = (BLOCKS * sizeof(memBlock));
-    uint8 * blockAddr = ALIGN(kernelEndAddr + blockLen, 16);
+    uint8 * blockAddr = ALIGN(kernelEndAddr + blockLen, PAGE_SIZE);
 
     memBlock * block = (memBlock *) kernelEndAddr;
 

@@ -7,7 +7,15 @@
 #include <stdbool.h>
 #include <page.h>
 
-#define BLOCKS  4096    // 16 MB de memoria ( por ahora)
+typedef struct memBlock{
+    void * addr;
+    struct memBlock * next;
+} memBlock;
+
+#define BLOCKS 16384    // 16 MB de memoria ( por ahora)
+
+#define BLOCK_START 0x100000
+#define BLOCK_END (BLOCK_START + BLOCKS*sizeof(memBlock))
 
 // Incia todos los bloques de memoria en una lista 
 void initMemBlock(uint32 memSize);
