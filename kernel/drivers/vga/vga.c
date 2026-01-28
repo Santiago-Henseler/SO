@@ -1,7 +1,5 @@
 #include "vga.h"
 
-#define VIDEOMEM ((char*) 0xB8000)
-
 int cursorX = 0;
 int cursorY = 0;
 
@@ -21,7 +19,7 @@ void moverCursor(int pos){
 }
 
 void caracterVacio(int color){
-    volatile char * videoMem = VIDEOMEM + 2*(cursorX + VGA_WIDTH*cursorY);
+    volatile char * videoMem = MEM_VGA + 2*(cursorX + VGA_WIDTH*cursorY);
     videoMem[0] = ' ';
     videoMem[1] = color;
     cursorX++;
@@ -31,8 +29,8 @@ void scrollUpVga(){
    
     for(int y = 0; y < VGA_HEIGHT; y++){
         for(int x = 0; x < VGA_WIDTH; x++){
-            volatile char * videoMem = VIDEOMEM + 2*(x + VGA_WIDTH*y);
-            volatile char * videoMemOld = VIDEOMEM +2*(x + VGA_WIDTH*(y+1));
+            volatile char * videoMem = MEM_VGA + 2*(x + VGA_WIDTH*y);
+            volatile char * videoMemOld = MEM_VGA +2*(x + VGA_WIDTH*(y+1));
             videoMem[0] = videoMemOld[0];
             videoMem[1] = videoMemOld[1]; 
         }
@@ -55,7 +53,7 @@ void newLineVga(){
 void clearVga(){
     for(int y = 0; y < VGA_HEIGHT; y++){
         for(int x = 0; x < VGA_WIDTH; x++){
-            volatile char * videoMem = VIDEOMEM + 2*x + 160*y;
+            volatile char * videoMem = MEM_VGA + 2*x + 160*y;
             videoMem[0] = ' ';
             videoMem[1] = WHITE;
         }
@@ -83,7 +81,7 @@ void printVga(const char* str, int color){
             continue;
         }
 
-        volatile char * videoMem = VIDEOMEM + 2*(cursorX + VGA_WIDTH*cursorY);
+        volatile char * videoMem = MEM_VGA + 2*(cursorX + VGA_WIDTH*cursorY);
 
         videoMem[0] = *str++;
         videoMem[1] = color; 

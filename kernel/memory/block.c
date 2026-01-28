@@ -26,12 +26,12 @@ void initMemBlock(uint32 memSize){
     block[0].addr = blockAddr;
 
     for(int i = 1; i < BLOCKS-1; i++){ 
-        block[i].addr = blockAddr + i*(BLOCK_SIZE);
+        block[i].addr = blockAddr + i*(PAGE_SIZE);
         block[i].next = &block[i+1];
-        memSet(block[i].addr, 1, BLOCK_SIZE);
+        memSet(block[i].addr, 1, PAGE_SIZE);
     }
 
-    block[BLOCKS-1].addr = blockAddr+(BLOCKS-1)*BLOCK_SIZE;
+    block[BLOCKS-1].addr = blockAddr+(BLOCKS-1)*PAGE_SIZE;
     block[BLOCKS-1].next = NULL;
 
     rootBlock = &block[0];

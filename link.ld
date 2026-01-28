@@ -2,6 +2,8 @@ ENTRY(kernelEntry)
 
 SECTIONS {
     . = 0x10000;
+    
+    kernelStart = .;
 
     .text : {  
         kernelEntry.o(.text)

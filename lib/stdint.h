@@ -19,7 +19,7 @@ typedef unsigned long long uint64;
 #define HEX_BASE 16
 #define DEC_BASE 10
 
-// Alinea un int a la base aling
+// Alinea a la base
 #define ALIGN(addr, align) (((int)(addr) + ((align) - 1)) & ~((align) - 1))
 
 // Dado un int devuelve un string terminado en \0 (considerando el signo)

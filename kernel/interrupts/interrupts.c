@@ -12,7 +12,7 @@ char * interruptName[SOFTWARE_INT] = {
 
 void interruptSoftware(InterruptRegisters * interruptRegs){
 
-    printf("Interrupt: %i Error: %x \n", interruptRegs->interrupt, interruptRegs->error);
+    printf("Interrupt: %i Code: %x \n", interruptRegs->interrupt, interruptRegs->code);
     printf("%s \n", interruptName[interruptRegs->interrupt]);
     printf("eip => %x  esp => %x  flags => %x \n", interruptRegs->eip, interruptRegs->esp, interruptRegs->eflags);
 

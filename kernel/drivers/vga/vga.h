@@ -9,6 +9,9 @@
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 
+// Vga memory map
+#define MEM_VGA ((char*) 0xB8000)
+
 // Vga ports para mover el cursor 
 #define COMMAND_PORT_VGA 0x3D4
 #define DATA_PORT_VGA 0x3D5
