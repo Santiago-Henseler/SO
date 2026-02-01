@@ -65,7 +65,21 @@ memSize equ 0x9000          ; Donde voy a guardar en memmoria
 
 bits 32
 pm:
-    jmp  0x08:0x10000       ; Salto a KernelEntry
+    ; Seteo los segmentos de datos
+    mov ax, 0x10
+	mov ds, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+    mov ss, ax
+
+    ; Muevo el kernel a una posicion mas alta en memoria
+    mov esi, 0x00010000    
+    mov edi, 0x00100000    
+    mov ecx, 128 * 512 / 4 ; dwords a copiar (64 KB)
+    rep movsd
+
+    jmp  0x08:0x00100000       ; Salto a KernelEntry
 
 times 510 - ($-$$) db 0     ; Agrega la cantidad de 0 necesaria para completar el sector de disco 
 

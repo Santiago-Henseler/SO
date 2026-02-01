@@ -1,7 +1,6 @@
 #include "block.h"
 
-//extern uint8 kernelEnd; TODO: deberia utilizar esto
-#define kernelEnd 0x100000
+extern uint8 kernelEnd;
 
 memBlock * rootBlock = NULL;
 memBlock * rootUsedBlock = NULL;
@@ -11,7 +10,7 @@ memBlock * rootUsedBlock = NULL;
 // para cuando se haga free del bloque chequear que el puntero dado sea correcto 
 void initMemBlock(uint32 memSize){
 
-    uint8 * kernelEndAddr = ((uint8 * )kernelEnd);
+    uint8 * kernelEndAddr = &kernelEnd;
     uint32  blockLen = (BLOCKS * sizeof(memBlock));
     uint8 * blockAddr = ALIGN(kernelEndAddr + blockLen, PAGE_SIZE);
 

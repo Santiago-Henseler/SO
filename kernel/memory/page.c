@@ -7,38 +7,33 @@ extern uint8 kernelStart;
 
 extern void setPageDirectory(pageDirectoryEntry* pd);
 extern void startPagination();
+void mapPage(void *pa, void *va, uint32 flags);
 
 pageDirectoryEntry * pageDirectory = PAGE_FLAG_NO_PRESENT;  
 
 void initPageTable(){
-
-    pageDirectory = ALIGN(getBlock(), PAGE_SIZE);
+    
+    pageDirectory = ALIGN(getBlock(), PAGE_SIZE); 
 
     for(int i = 0; i < PAGE_DIR_SIZE; i++){
         pageDirectory[i] = PAGE_FLAG_NO_PRESENT; 
     }
 
-    for (uint32 addr = &kernelStart; addr < &kernelEnd; addr += PAGE_SIZE) {
+    for (uint32 addr = 0; addr < ALIGN(((uint32)&kernelEnd + BLOCKS*sizeof(memBlock)), PAGE_SIZE); addr += PAGE_SIZE) {
         mapPage((void*)addr, (void*)addr, PAGE_FLAG_KERNEL  | PAGE_FLAG_WRITE | PAGE_FLAG_PRESENT);
     }
 
     mapPage(MEM_VGA, MEM_VGA, PAGE_FLAG_KERNEL | PAGE_FLAG_WRITE | PAGE_FLAG_PRESENT);
-
-    for (uint32 addr = BLOCK_START; addr < BLOCK_END; addr += PAGE_SIZE) {
-        mapPage((void*)addr, (void*)addr, PAGE_FLAG_KERNEL  | PAGE_FLAG_WRITE | PAGE_FLAG_PRESENT);
-    }
 
     mapPage(pageDirectory, pageDirectory, PAGE_FLAG_WRITE  | PAGE_FLAG_PRESENT| PAGE_FLAG_KERNEL);
 
     setPageDirectory(pageDirectory);
     startPagination();
 }
-
+ 
 pageTableEntry * newPageTable(){
 
     pageTableEntry * pageTable = (pageTableEntry *)ALIGN(getBlock(), 4096);
-
-    mapPage(pageTable, pageTable,PAGE_FLAG_PRESENT | PAGE_FLAG_WRITE );
 
     for(int i = 0; i < PAGE_TABLE_SIZE; i++){
         pageTable[i] = PAGE_FLAG_NO_PRESENT; 
@@ -55,6 +50,7 @@ void mapPage(void *pa, void *va, uint32 flags){
     if (!(pageDirectory[pageDirPos] & PAGE_FLAG_PRESENT)) {
         pageTableEntry *newP = newPageTable();
         pageDirectory[pageDirPos] = ((uint32)newP & PDE_TO_PT_MASK) | PAGE_FLAG_PRESENT | PAGE_FLAG_WRITE;
+        mapPage(newP, newP,PAGE_FLAG_PRESENT | PAGE_FLAG_WRITE );
     }
 
     pageTableEntry *pageTable = (pageTableEntry *)(pageDirectory[pageDirPos] & PDE_TO_PT_MASK);
@@ -72,4 +68,21 @@ void * getPage(){
     mapPage(addr, addr, PAGE_FLAG_PRESENT | PAGE_FLAG_WRITE | PAGE_FLAG_WT);
 
     return addr;
+}
+
+void freePage(void * va){
+    // TODO: controlar el addr que te pasan
+
+    uint32 pageDirPos = ((uint32)va & VA_TO_PD_MASK) >> 22;
+    uint32 pageTablePos = ((uint32)va & VA_TO_PT_MASK) >> 12;
+
+    pageTableEntry *pageTable = (pageTableEntry *)(pageDirectory[pageDirPos] & PDE_TO_PT_MASK);
+
+    uint32 pa =  pageTable[pageTablePos];
+    uint32 addr = (pa & PA_TO_ADDR_MASK) |  (uint32)va & VA_TO_OFFSET;
+
+    pageTable[pageTablePos] = PAGE_FLAG_NO_PRESENT;
+
+    freeBlock(addr);
+
 }

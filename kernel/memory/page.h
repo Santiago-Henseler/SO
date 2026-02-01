@@ -30,6 +30,9 @@
 // Page Table a partir del Page Directory Entry
 #define PDE_TO_PT_MASK 0xFFFFF000
 
+// Mascara para obtener el offset de una direccion
+#define VA_TO_OFFSET 0x00000FFF
+
 // bits 31..12 de direccion de la page table entry 
 // bit 7 para tamaño de pagina (0 = 4Kb)  
 // bit 4 para no cachear la pagina

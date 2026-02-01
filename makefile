@@ -27,7 +27,7 @@ kernel.bin:
 bootdisk:
 	dd if=/dev/zero of=disk.img bs=512 count=2880
 	dd conv=notrunc if=bootloader of=disk.img bs=512 count=1 seek=0
-	dd if=kernel.bin of=disk.img bs=512 count=128 seek=1
+	dd if=kernel.bin of=disk.img bs=512 conv=notrunc seek=1
 
 run:
 	qemu-system-i386 -machine q35 -fda disk.img -gdb tcp::26000
