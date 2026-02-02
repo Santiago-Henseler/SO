@@ -9,7 +9,7 @@
 #include <pic.h>
 
 typedef struct {
-    uint32 ds;                                            // Data segment
+    uint32 gs , fs, es, ds;                               // Data segment
     uint32 edi, esi, ebp, useless, ebx, edx, ecx, eax;    // Registros comunes
     uint32 interrupt;                                     // Numero de interrupcion 
     uint32 code;                                          // Codigo de interrupcion (si lo pushea la cpu)

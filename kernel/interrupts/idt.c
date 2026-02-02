@@ -100,6 +100,7 @@ void initInterrupts(){
     idtSetEntry(28, (uint32)interruptHandlerNoCode28, 0x08, IDT_FLAGS);
     idtSetEntry(29, (uint32)interruptHandlerNoCode29, 0x08, IDT_FLAGS);
     idtSetEntry(30, (uint32)interruptHandlerNoCode30, 0x08, IDT_FLAGS);
+    // Seteo interrupcion de syscall
     idtSetEntry(31, (uint32)interruptHandlerNoCode31, 0x08, IDT_FLAGS);
     // Seteo interrupciones por hardware
     idtSetEntry(32, (uint32)interruptHandlerNoCode32, 0x08, IDT_FLAGS);
@@ -118,6 +119,7 @@ void initInterrupts(){
     idtSetEntry(45, (uint32)interruptHandlerNoCode45, 0x08, IDT_FLAGS);
     idtSetEntry(46, (uint32)interruptHandlerNoCode46, 0x08, IDT_FLAGS);
     idtSetEntry(47, (uint32)interruptHandlerNoCode47, 0x08, IDT_FLAGS);
+    // Seteo int de syscall
 
     // Cargo la tabla de interrupciones
     idtLoad(&idt);

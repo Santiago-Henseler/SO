@@ -56,6 +56,10 @@ void (* hardwareHandlers[HARDWARE_INT])(InterruptRegisters * interruptRegs) = {
 
 void interrupthandler(InterruptRegisters * interruptRegs){
 
+    if(interruptRegs->interrupt == 31){
+        printf("%i \n", interruptRegs->eax);
+    }
+
     if(interruptRegs->interrupt > (SOFTWARE_INT + HARDWARE_INT)){
         printf("[Error]: interrupción no soportada\n");
         for(;;);

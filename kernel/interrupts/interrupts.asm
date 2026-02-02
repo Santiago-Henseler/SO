@@ -10,10 +10,11 @@ idtLoad:
 extern interrupthandler
 commonInterruptHandler:    
     pusha                           ; Pusheo registros de proposito general al stack
-
-    xor eax, eax                    ; Guardo el data segment actual
-    mov ax, ds
-    push eax
+                  
+    push ds                         ; Guardo el data segment actual
+    push es
+    push fs
+    push gs
 
     mov ax, 0x10                    ; kernel data segment
     mov ds, ax
@@ -27,11 +28,10 @@ commonInterruptHandler:
 
     add  esp, 4                      ; Paso de largo el stack pointer que pushie antes del call
     
-    pop eax                          ; Reestablezco el segmento de datos
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
+    pop gs
+    pop fs
+    pop es
+    pop ds                           ; Reestablezco el segmento de datos
 
     popa
 

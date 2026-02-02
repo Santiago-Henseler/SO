@@ -1,6 +1,6 @@
 CFLAGS = -masm=intel -m32 -ffreestanding -nostdlib -nostdinc -fno-stack-protector -fno-pic -Wall -Wextra -g
-LIBS = -Ilib -Ikernel/drivers/vga -Ikernel/drivers/keyboard -Ikernel/memory -Ikernel/interrupts
-KERNELFILES = kernel/*.c kernel/drivers/*/*.c lib/*.c kernel/interrupts/*.c kernel/memory/*.c
+LIBS = -Ilib -Ikernel/drivers/vga -Ikernel/drivers/keyboard -Ikernel/memory -Ikernel/interrupts -Ikernel/syscall
+KERNELFILES = kernel/*.c kernel/drivers/*/*.c lib/*.c kernel/interrupts/*.c kernel/memory/*.c kernel/syscall/*.c 
 
 all: clean bootloader asm kernel.bin bootdisk run
 debug: clean bootloader asm kernel.bin bootdisk gdb
@@ -17,7 +17,7 @@ asm:
 	nasm -f elf32 kernel/drivers/io.asm -o io.o
 	nasm -f elf32 kernel/interrupts/interrupts.asm -o asmInterrupts.o
 	nasm -f elf32 kernel/memory/page.asm -o asmPage.o
-
+	nasm -f elf32 kernel/syscall/syscall.asm -o asmSyscal.o
 
 kernel.bin:	
 	gcc $(CFLAGS) $(LIBS) -c $(KERNELFILES)
