@@ -10,10 +10,10 @@ memBlock * rootUsedBlock = NULL;
 // para cuando se haga free del bloque chequear que el puntero dado sea correcto 
 void initMemBlock(uint32 freeMemSize){
 
-    // TODO: Mapear toda la memoria disponible
+    uint32 blocks = freeMemSize / PAGE_SIZE;
 
     uint8 * kernelEndAddr = &kernelEnd;
-    uint32  blockLen = (BLOCKS * sizeof(memBlock));
+    uint32  blockLen = (blocks * sizeof(memBlock));
     uint8 * blockAddr = ALIGN(kernelEndAddr + blockLen, PAGE_SIZE);
 
     memBlock * block = (memBlock *) kernelEndAddr;
@@ -21,14 +21,14 @@ void initMemBlock(uint32 freeMemSize){
     block[0].next = &block[1];
     block[0].addr = blockAddr;
 
-    for(int i = 1; i < BLOCKS-1; i++){ 
+    for(int i = 1; i < blocks-1; i++){ 
         block[i].addr = blockAddr + i*(PAGE_SIZE);
         block[i].next = &block[i+1];
-        memSet(block[i].addr, 1, PAGE_SIZE);
+        //memSet(block[i].addr, 1, PAGE_SIZE); solo para debug 
     }
 
-    block[BLOCKS-1].addr = blockAddr+(BLOCKS-1)*PAGE_SIZE;
-    block[BLOCKS-1].next = NULL;
+    block[blocks-1].addr = blockAddr+(blocks-1)*PAGE_SIZE;
+    block[blocks-1].next = NULL;
 
     rootBlock = &block[0];
 }

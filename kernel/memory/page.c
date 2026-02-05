@@ -11,7 +11,7 @@ void mapPage(void *pa, void *va, uint32 flags);
 
 pageDirectoryEntry * pageDirectory = PAGE_FLAG_NO_PRESENT;  
 
-void initPageTable(){
+void initPageTable(uint32 freeMemSize){
     
     pageDirectory = ALIGN(getBlock(), PAGE_SIZE); 
 
@@ -19,7 +19,9 @@ void initPageTable(){
         pageDirectory[i] = PAGE_FLAG_NO_PRESENT; 
     }
 
-    for (uint32 addr = 0; addr < ALIGN(((uint32)&kernelEnd + BLOCKS*sizeof(memBlock)), PAGE_SIZE); addr += PAGE_SIZE) {
+
+    uint32 blocks = freeMemSize / PAGE_SIZE;
+    for (uint32 addr = 0; addr < ALIGN(((uint32)&kernelEnd + blocks*sizeof(memBlock)), PAGE_SIZE); addr += PAGE_SIZE) {
         mapPage((void*)addr, (void*)addr, PAGE_FLAG_KERNEL  | PAGE_FLAG_WRITE | PAGE_FLAG_PRESENT);
     }
 

@@ -5,6 +5,8 @@
 #include <page.h>
 #include <syscall.h>
 
+#include "drivers/floppyDisk/floppy.h"
+
 extern uint8 kernelEnd;
 extern uint8 kernelStart;
 
@@ -15,13 +17,14 @@ void main(uint32 memRamSize){
     
     uint32 kernelSize = (uint32)&kernelEnd - (uint32)&kernelStart;
     initMemBlock(memRamSize - kernelSize);
+    initPageTable(memRamSize - kernelSize);
 
-    initPageTable();
-    
     printf("[Info] Se entro en modo protegido y se activaron las interrupciones \n");
     printf("[Info] Se inicio la memoria en bloques, espacio disponible: %i \n", memRamSize - kernelSize);
     printf("[info] Se inicio la memoria paginada\n");   
     
+
+    initFloppyDisk();
     
     for (;;);
 }

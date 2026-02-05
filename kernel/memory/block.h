@@ -12,8 +12,6 @@ typedef struct memBlock{
     struct memBlock * next;
 } memBlock;
 
-#define BLOCKS 4096    // 16 MB de memoria ( por ahora)
-
 // Incia todos los bloques de memoria en una lista 
 void initMemBlock(uint32 memSize);
 
