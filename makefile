@@ -30,7 +30,7 @@ bootdisk:
 	dd if=kernel.bin of=disk.img bs=512 conv=notrunc seek=1
 
 run:
-	qemu-system-i386 -machine q35 -fda disk.img -gdb tcp::26000
+	qemu-system-i386 -machine q35 -m 512M -fda disk.img -gdb tcp::26000
 
 gdb:
 	qemu-system-i386 -machine q35 -fda disk.img -gdb tcp::26000 -S & \

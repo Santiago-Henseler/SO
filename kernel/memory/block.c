@@ -8,7 +8,9 @@ memBlock * rootUsedBlock = NULL;
 // Utilizo la primera seccion de memoria para guardar los structs
 // organizados en 2 listas discriminando libres y usados
 // para cuando se haga free del bloque chequear que el puntero dado sea correcto 
-void initMemBlock(uint32 memSize){
+void initMemBlock(uint32 freeMemSize){
+
+    // TODO: Mapear toda la memoria disponible
 
     uint8 * kernelEndAddr = &kernelEnd;
     uint32  blockLen = (BLOCKS * sizeof(memBlock));
@@ -46,7 +48,7 @@ void * getBlock(){
 }
 
 void freeBlock(void * addr){
-
+    //TODO: agregar mejore chequeos
     if(!addr)
         return;
 

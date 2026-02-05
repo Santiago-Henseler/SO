@@ -1,6 +1,8 @@
 org 0x7c00                  ; Dirección del PC donde salta la BIOS al terminar
 bits 16                     ; Modo real del procesador
 
+memRamSize equ 0x9000          ; Donde voy a guardar en memoria 
+
 start:  
     cli                     ; Bloqueo las interrupciones
     cld
@@ -9,12 +11,11 @@ start:
     mov sp, 0x7C00 
     call loadKernel   
     lgdt [GDT]              ; Carga la GDT 
-    ;call getMemSize
+    call getMemRamSize
     jmp  changeMode
     hlt
 
 loadKernel:
-; TODO: deberia de cargar el kernel en 0x100000
     mov  ax, 0x1000          ; A donde voy a levantar en ram el sector leido
     mov  es, ax
     xor  bx, bx
@@ -60,8 +61,6 @@ GDT_end:
 
 errorMsgDisk: db "[Error] Hubo un problema al cargar el kernel", 0Dh, 0Ah, 0
 diskOk:   db "[Info] Se cargo el kernel correctamente", 0Dh, 0Ah, 0
-
-memSize equ 0x9000          ; Donde voy a guardar en memmoria 
 
 bits 32
 pm:

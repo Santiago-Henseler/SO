@@ -43,7 +43,7 @@ pageTableEntry * newPageTable(){
 }  
 
 void mapPage(void *pa, void *va, uint32 flags){
-
+    //TODO: agregar mejore chequeos
     uint32 pageDirPos = ((uint32)va & VA_TO_PD_MASK) >> 22;
     uint32 pageTablePos = ((uint32)va & VA_TO_PT_MASK) >> 12;
 
