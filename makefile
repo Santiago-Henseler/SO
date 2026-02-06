@@ -1,12 +1,12 @@
 CFLAGS = -masm=intel -m32 -ffreestanding -nostdlib -nostdinc -fno-stack-protector -fno-pic -Wall -Wextra -g
-LIBS = -Ilib -Ikernel/drivers/vga -Ikernel/drivers/keyboard -Ikernel/memory -Ikernel/interrupts -Ikernel/syscall
-KERNELFILES = kernel/*.c kernel/drivers/*/*.c lib/*.c kernel/interrupts/*.c kernel/memory/*.c kernel/syscall/*.c 
+LIBS = -Ilib -Ikernel/drivers/vga -Ikernel/drivers/keyboard -Ikernel/drivers/floppyDisk  -Ikernel/memory -Ikernel/interrupts -Ikernel/syscall
+KERNELFILES = kernel/*.c kernel/drivers/*/*.c kernel/drivers/*.c  lib/*.c kernel/interrupts/*.c kernel/memory/*.c kernel/syscall/*.c 
 
 all: clean bootloader asm kernel.bin bootdisk run
 debug: clean bootloader asm kernel.bin bootdisk gdb
 
 clean: 
-	rm disk.img kernel.bin kernel.elf bootloader *.o &>/dev/null
+	rm kernel.bin kernel.elf bootloader *.o &>/dev/null
 	clear
 
 bootloader:
@@ -30,7 +30,7 @@ bootdisk:
 	dd if=kernel.bin of=disk.img bs=512 conv=notrunc seek=1
 
 run:
-	qemu-system-i386 -machine q35 -m 512M -fda disk.img -gdb tcp::26000
+	qemu-system-i386 -machine q35 -m 512M -fda disk.img
 
 gdb:
 	qemu-system-i386 -machine q35 -fda disk.img -gdb tcp::26000 -S & \

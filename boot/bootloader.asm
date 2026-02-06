@@ -1,7 +1,7 @@
 org 0x7c00                  ; Dirección del PC donde salta la BIOS al terminar
 bits 16                     ; Modo real del procesador
 
-memRamSize equ 0x9000          ; Donde voy a guardar en memoria 
+memRamSize equ 0x9000       ; Donde voy a guardar en memoria 
 
 start:  
     cli                     ; Bloqueo las interrupciones
@@ -21,7 +21,7 @@ loadKernel:
     xor  bx, bx
  
     mov  ah, 02h             ; Indico que quiero leer un sector del disco
-    mov  al, 128              ; Cantidad de Sectores
+    mov  al, 128             ; Cantidad de Sectores
     mov  ch, 0
     mov  cl, 2               ; Sector del disco a leer
     mov  dh, 0
@@ -78,7 +78,7 @@ pm:
     mov ecx, 128 * 512 / 4 ; dwords a copiar (64 KB)
     rep movsd
 
-    jmp  0x08:0x00100000       ; Salto a KernelEntry
+    jmp  0x08:0x00100000    ; Salto a KernelEntry
 
 times 510 - ($-$$) db 0     ; Agrega la cantidad de 0 necesaria para completar el sector de disco 
 

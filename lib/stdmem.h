@@ -23,8 +23,8 @@ void * realloc(void * ptr, uint32 size);
 // Si el puntero es invalido su comportamiento no esta definido
 void free(void * ptr);
 
-// Copia size bytes del contedio de old en new 
-void memCopy(void * src, void * dest, uint32 size);
+// Copia size bytes del contedio de src en dst 
+void memCopy(void * src, void * dst, uint32 size);
 
 // Sete size bytes con value
 void memSet(void * dst, uint8 value, uint32 size);

@@ -44,11 +44,16 @@ void clockInterrupt(InterruptRegisters * interruptRegs){
     ackPic(interruptRegs->interrupt-SOFTWARE_INT);
 }
 
+void floppyDiskInterrupt(InterruptRegisters * interruptRegs){
+    setFloppyInt();
+    ackPic(interruptRegs->interrupt-SOFTWARE_INT);
+}
+
 // Hardware interrupt handlers
 void (* hardwareHandlers[HARDWARE_INT])(InterruptRegisters * interruptRegs) = {
     &clockInterrupt, &keyboardInterrupt, &interruptHardware,
     &interruptHardware, &interruptHardware, &interruptHardware,
-    &interruptHardware, &interruptHardware, &interruptHardware,
+    &floppyDiskInterrupt, &interruptHardware, &interruptHardware,
     &interruptHardware, &interruptHardware, &interruptHardware,
     &interruptHardware, &interruptHardware, &interruptHardware,
     &interruptHardware
