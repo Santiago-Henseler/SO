@@ -10,4 +10,7 @@ void outB(unsigned short port, unsigned char data);
 // Recibe un byte del puerto indicado
 uint8 inB(unsigned short port);
 
+// Espera time (en microsegundos)
+void ioWait(uint16 time);
+
 #endif

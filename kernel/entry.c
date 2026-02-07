@@ -25,24 +25,5 @@ void main(uint32 memRamSize){
     printf("[info] Se inicio la memoria paginada\n");  
     printf("[info] Se inicio el driver del floppy disk\n");  
 
-
-    uint8 buff[FLOPPY_BLOCK];
-
-    for(int i = 0; i < FLOPPY_BLOCK; i++)
-        buff[i] = 9;
-
-    int a = writeFloppyDisk(15, buff);  
-
-    printf("%i \n", a);
-
-    uint8 buff2[FLOPPY_BLOCK];
-
-    int b = readFloppyDisk(15, buff);  
-
-    printf("%i\n", b);
-
-    for(int i = 0; i < FLOPPY_BLOCK; i++)
-        printf("%i", buff2[i]);
-
     for (;;);
 }

@@ -4,6 +4,7 @@
 // Headers extra
 #include <stdint.h>
 #include "floppyDisk/floppy.h"
+#include "io.h"
 
 #define DMA_MASK 0x0A
 #define DMA_CHANEL_2 0x04

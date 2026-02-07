@@ -1,8 +1,6 @@
 #include "floppy.h"
 
-#define FLOPPY_DMA_ADDR  0x1000  
-
-uint8* floppyDmaBuffer = (uint8*)FLOPPY_DMA_ADDR;
+static uint8 floppyDmaBuffer[FLOPPY_BLOCK_SIZE] __attribute__((aligned(0x1000)));
 bool floppyInterrupt = false;
 
 void setFloppyInt(){
@@ -43,8 +41,6 @@ void sendFloppyCommand(uint8 command){
 }
 
 void floppySeek(uint8 cylinder, uint8 head) {
-    floppyInterrupt = false;
-
     sendFloppyCommand(FLOPPY_SEEK_COMMAND);
     sendFloppyCommand((head << 2) | 0);
     sendFloppyCommand(cylinder);
@@ -56,20 +52,48 @@ void floppySeek(uint8 cylinder, uint8 head) {
     reciveFloppyCommand(); 
 }
 
-int floppyDiskAction(int blockNum, uint8 buffer[FLOPPY_BLOCK], bool write){
+void floppyReset(){
+
+    uint8 dor = inB(FLOPPY_DIGITAL_OUTPUT_PORT);
+
+    outB(FLOPPY_DIGITAL_OUTPUT_PORT, dor & ~0x04);
+
+    ioWait(4);
+
+    outB(FLOPPY_DIGITAL_OUTPUT_PORT, dor | 0x04);
+
+    waitFloppyInt();
+
+    for (int i = 0; i < 4; i++) {
+        sendFloppyCommand(FLOPPY_SENSE_COMMAND);
+        reciveFloppyCommand();
+        reciveFloppyCommand();
+    }
+
+    outB(FLOPPY_DIGITAL_OUTPUT_PORT, 0x00);
+    outB(FLOPPY_DIGITAL_OUTPUT_PORT, 0x0c);
+    outB(FLOPPY_DIGITAL_OUTPUT_PORT, 0x1C);
+
+    waitFloppyInt();
+}
+
+int floppyDiskAction(int blockNum, uint8 buffer[FLOPPY_BLOCK_SIZE], bool write){
+
+    if(blockNum >= FLOPPY_MAX_BLOCK)
+        return -1;
 
     if(write)
-        memCopy(buffer, floppyDmaBuffer, FLOPPY_BLOCK);
+        memCopy(buffer, floppyDmaBuffer, FLOPPY_BLOCK_SIZE);
 
-    setupDMA(floppyDmaBuffer, FLOPPY_BLOCK, write ? DMA_WRITE : DMA_READ);
+    setupDMA(floppyDmaBuffer, FLOPPY_BLOCK_SIZE, write ? DMA_WRITE : DMA_READ);
 
-    uint8 head = (blockNum / 18) % 2;;
+    uint8 head = (blockNum / 18) % 2;
     uint8 cylinder = blockNum / 36;
     uint8 sector = (blockNum % 18) + 1;
 
     floppySeek(cylinder, head);
 
-    // Indico que voy a escribir
+    // Indico la accion a ejecutar
     sendFloppyCommand(write ? (FLOPPY_MT | FLOPPY_MFM | 0x5) : (FLOPPY_MT | FLOPPY_MFM | 0x6 ));
 
     sendFloppyCommand((head << 2) | 0); // ver driver number (el 0)
@@ -95,46 +119,40 @@ int floppyDiskAction(int blockNum, uint8 buffer[FLOPPY_BLOCK], bool write){
     if (st1 | st2) return -1;
 
     if(!write)
-        memCopy(floppyDmaBuffer, buffer, FLOPPY_BLOCK);
+        memCopy(floppyDmaBuffer, buffer, FLOPPY_BLOCK_SIZE);
 
     return 0;
 }
 
-int writeFloppyDisk(int blockNum, uint8 buffer[FLOPPY_BLOCK]){
+int writeFloppyDisk(int blockNum, uint8 buffer[FLOPPY_BLOCK_SIZE]){
     return floppyDiskAction(blockNum, buffer, true); 
 }
 
-int readFloppyDisk(int blockNum, uint8 buffer[FLOPPY_BLOCK]){
+int readFloppyDisk(int blockNum, uint8 buffer[FLOPPY_BLOCK_SIZE]){
     return floppyDiskAction(blockNum, buffer, false);
 }
 
 void initFloppyDisk(){
-
     sendFloppyCommand(FLOPPY_VERSION_COMMAND);
     uint8 version = reciveFloppyCommand();
 
     if(version != 0x90)
         for(;;); //TODO: No hay soporte para esta unidad floppy
-
     // Configuro el floppy disk
     sendFloppyCommand(FLOPPY_CONFIGURE_COMMAND);
     sendFloppyCommand(0x68);   // Busqueda implicita habilitada              
     sendFloppyCommand(0x0F);   // FIFO habilitado
     sendFloppyCommand(0x00);   // Uso de valor predeterminado de compresion
-
+    
     // Mantener la configuracion en el floppy
     sendFloppyCommand(FLOPPY_LOCK_COMMAND);
-
-    // Reset Floppy driver
-    outB(FLOPPY_DIGITAL_OUTPUT_PORT, 0x00);
-    outB(FLOPPY_DIGITAL_OUTPUT_PORT, 0x0c);
-    outB(FLOPPY_DIGITAL_OUTPUT_PORT, 0x1C);
-
-    waitFloppyInt();
+    floppyReset();
 
     // Recalibro el Floppy
+    floppyInterrupt = false;
     sendFloppyCommand(FLOPPY_RECALIBRATE_COMMAND);
-    sendFloppyCommand(0x00); 
+    sendFloppyCommand(0x00);
+
     sendFloppyCommand(FLOPPY_SENSE_COMMAND); 
     reciveFloppyCommand();
     reciveFloppyCommand(); 

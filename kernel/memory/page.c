@@ -19,7 +19,6 @@ void initPageTable(uint32 freeMemSize){
         pageDirectory[i] = PAGE_FLAG_NO_PRESENT; 
     }
 
-
     uint32 blocks = freeMemSize / PAGE_SIZE;
     for (uint32 addr = 0; addr < ALIGN(((uint32)&kernelEnd + blocks*sizeof(memBlock)), PAGE_SIZE); addr += PAGE_SIZE) {
         mapPage((void*)addr, (void*)addr, PAGE_FLAG_KERNEL  | PAGE_FLAG_WRITE | PAGE_FLAG_PRESENT);

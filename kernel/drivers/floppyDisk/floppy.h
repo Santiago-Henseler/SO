@@ -8,7 +8,16 @@
 #include "../io.h"
 #include "../dma.h"
 
-#define FLOPPY_BLOCK 512
+//TODO: Siempre que utilizo el floppy chequear que los bloques no pisen bloques del sisop 
+
+#define FLOPPY_DMA_ADDR 0x1000
+
+#define FLOPPY_BLOCK_SIZE 512
+#define FLOPPY_SECTORS 18
+#define FLOPPY_HEADS 2
+#define FLOPPY_CYLINDERS 80
+
+#define FLOPPY_MAX_BLOCK FLOPPY_HEADS * FLOPPY_SECTORS * FLOPPY_CYLINDERS
 
 #define FLOPPY_DATA_PORT 0x3F5
 #define FLOPPY_STATUS_PORT 0x3F4
@@ -31,9 +40,9 @@ void initFloppyDisk();
 void setFloppyInt();
 
 // Permite escribir un bloque de memoria en el floppy disk
-int writeFloppyDisk(int blockNum, uint8 buffer[FLOPPY_BLOCK]);
+int writeFloppyDisk(int blockNum, uint8 buffer[FLOPPY_BLOCK_SIZE]);
 
 // Permite leer un bloque de memoria del floppy disk
-int readFloppyDisk(int blockNum, uint8 buffer[FLOPPY_BLOCK]);
+int readFloppyDisk(int blockNum, uint8 buffer[FLOPPY_BLOCK_SIZE]);
 
 #endif
