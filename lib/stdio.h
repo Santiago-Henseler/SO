@@ -2,7 +2,7 @@
 #define STDIO_H
 
 // Headers extra //
-#include <vga.h>
+#include <vga/vga.h>
 #include <string.h>
 #include <stdarg.h>
 

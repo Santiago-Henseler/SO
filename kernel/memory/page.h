@@ -4,7 +4,7 @@
 // Headers extra
 #include <stdint.h>
 #include <block.h>
-#include <vga.h>
+#include <vga/vga.h>
 
 // Cantidad de entradas en la page directory
 #define PAGE_DIR_SIZE 1024

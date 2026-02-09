@@ -2,13 +2,14 @@
     "configurations": [
         {
             "name": "Linux",
-            "includePath": [ // Para que visual no se queje de las libs
+            "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/lib"
+                "${workspaceFolder}/lib",
+                "${workspaceFolder}/kernel/fileSystem"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
-            "cStandard": "c17", 
+            "cStandard": "c17",
             "cppStandard": "gnu++17",
             "intelliSenseMode": "linux-gcc-x64"
         }

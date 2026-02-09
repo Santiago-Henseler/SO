@@ -2,7 +2,7 @@
 #define INTERRUPTS_H
 
 // Headers extra
-#include <keyboard.h>
+#include <keyboard/keyboard.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <idt.h>

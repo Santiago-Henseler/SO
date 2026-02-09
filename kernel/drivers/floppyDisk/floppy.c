@@ -121,6 +121,8 @@ int floppyDiskAction(int blockNum, uint8 buffer[FLOPPY_BLOCK_SIZE], bool write){
     if(!write)
         memCopy(floppyDmaBuffer, buffer, FLOPPY_BLOCK_SIZE);
 
+    printVga("AAA\n", RED);
+
     return 0;
 }
 

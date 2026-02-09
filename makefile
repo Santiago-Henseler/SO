@@ -1,6 +1,6 @@
 CFLAGS = -masm=intel -m32 -ffreestanding -nostdlib -nostdinc -fno-stack-protector -fno-pic -Wall -Wextra -g
-LIBS = -Ilib -Ikernel/drivers/vga -Ikernel/drivers/keyboard -Ikernel/drivers/floppyDisk  -Ikernel/memory -Ikernel/interrupts -Ikernel/syscall
-KERNELFILES = kernel/*.c kernel/drivers/*/*.c kernel/drivers/*.c  lib/*.c kernel/interrupts/*.c kernel/memory/*.c kernel/syscall/*.c 
+LIBS = -Ilib -Ikernel/drivers  -Ikernel/memory -Ikernel/interrupts -Ikernel/syscall -Ikernel/fileSystem
+KERNELFILES = kernel/*.c kernel/drivers/*/*.c kernel/drivers/*.c lib/*.c kernel/interrupts/*.c kernel/memory/*.c kernel/syscall/*.c kernel/fileSystem/*.c
 
 all: clean bootloader asm kernel.bin bootdisk run
 debug: clean bootloader asm kernel.bin bootdisk gdb
@@ -25,7 +25,7 @@ kernel.bin:
 	objcopy -O binary kernel.elf kernel.bin
 	
 bootdisk:
-	#dd if=/dev/zero of=disk.img bs=512 count=2880 # Comentar esta linea para mantener el filesystem
+	dd if=/dev/zero of=disk.img bs=512 count=2880 # Comentar esta linea para mantener el filesystem
 	dd conv=notrunc if=bootloader of=disk.img bs=512 count=1 seek=0
 	dd if=kernel.bin of=disk.img bs=512 conv=notrunc seek=1
 
