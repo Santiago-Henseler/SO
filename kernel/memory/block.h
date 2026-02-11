@@ -16,7 +16,7 @@ typedef struct memBlock{
 void initMemBlock(uint32 memSize);
 
 // Devuelve un puntero al primer byte de memoria fisica de un bloque
-void * getBlock();
+void * getRamBlock();
 
 // Libera la memoria del puntero dado 
 void freeBlock(void * addr);

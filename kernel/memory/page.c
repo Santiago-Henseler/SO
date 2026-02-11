@@ -13,7 +13,7 @@ pageDirectoryEntry * pageDirectory = PAGE_FLAG_NO_PRESENT;
 
 void initPageTable(uint32 freeMemSize){
     
-    pageDirectory = ALIGN(getBlock(), PAGE_SIZE); 
+    pageDirectory = ALIGN(getRamBlock(), PAGE_SIZE); 
 
     for(int i = 0; i < PAGE_DIR_SIZE; i++){
         pageDirectory[i] = PAGE_FLAG_NO_PRESENT; 
@@ -34,7 +34,7 @@ void initPageTable(uint32 freeMemSize){
  
 pageTableEntry * newPageTable(){
 
-    pageTableEntry * pageTable = (pageTableEntry *)ALIGN(getBlock(), 4096);
+    pageTableEntry * pageTable = (pageTableEntry *)ALIGN(getRamBlock(), 4096);
 
     for(int i = 0; i < PAGE_TABLE_SIZE; i++){
         pageTable[i] = PAGE_FLAG_NO_PRESENT; 
@@ -64,7 +64,7 @@ void mapPage(void *pa, void *va, uint32 flags){
 
 void * getPage(){
 
-    void * addr = ALIGN(getBlock(), PAGE_SIZE);
+    void * addr = ALIGN(getRamBlock(), PAGE_SIZE);
 
     mapPage(addr, addr, PAGE_FLAG_PRESENT | PAGE_FLAG_WRITE | PAGE_FLAG_WT);
 

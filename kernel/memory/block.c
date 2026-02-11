@@ -33,7 +33,7 @@ void initMemBlock(uint32 freeMemSize){
     rootBlock = &block[0];
 }
 
-void * getBlock(){
+void * getRamBlock(){
 
     if(!rootBlock) // TODO: No hay mas memoria disponible
         return NULL;
