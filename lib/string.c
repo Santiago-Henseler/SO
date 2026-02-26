@@ -32,7 +32,7 @@ int strCopy(char * src, char * dst){
     if(src == NULL || dst == NULL)
         return -1;
 
-    memCopy(src, dst, strLen(src));
+    memCopy(src, dst, strLen(src)+1);
 
     return 0;
 }

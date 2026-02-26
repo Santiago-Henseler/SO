@@ -54,6 +54,37 @@ int getFreeBlock(){
     return freeBlock;
 }
 
+// Devuelve un puntero al inodo con nombre filename dentro del Current Work Directory
+// Si no lo encuentra retorna NULL
+inode * findInodeInCWD(char * fileName){
+    //TODO: Esto hay que hacerlo con el current directory
+    inode * file = NULL;
+
+    int i = 0;
+    bool found = false;    
+    while(!found && i < FILE_MAX_BLOCKS){
+        if (root->block[i] < SUPER_BLOCK_POS)
+            found = true; // no lo encontre pero ya no hay mas bloques validos 
+
+        uint8 buffer[FLOPPY_BLOCK_SIZE];
+        int err = readFloppyDisk(root->block[i], buffer);
+        if(err == -1) return NULL;
+
+        dentry *entries = (dentry *)buffer;
+        for(int j = 0; j <= root->size % sizeof(dentry) && !found; j++){
+            dentry entrie = entries[j];
+            if(strCompare(entrie.name, fileName)){
+                readFloppyDisk(entrie.inode, buffer);
+                file = (inode *)malloc(sizeof(inode));
+                memCopy(buffer, file, sizeof(inode));
+                found = true;
+            }
+        }
+        i++;
+    }
+    return file;
+}
+
 inode * createInode(fileType type){
     inode * newInode = (inode *)malloc(sizeof(inode));
     if(newInode == NULL)
@@ -61,41 +92,10 @@ inode * createInode(fileType type){
 
     newInode->type = type;
     newInode->size = 0;
+    for(int i = 0; i < FILE_MAX_BLOCKS; i++)
+        newInode->block[i] = 0;
 
     return newInode;
-}
-
-inode * getInode(char * fileName){
-    //TODO: Esto hay que hacerlo con el current directory
-    inode * file = NULL;
-
-    int i = 0;
-    bool found = false;    
-
-    while(!found && i < FILE_MAX_BLOCKS){
-        uint8 buffer[FLOPPY_BLOCK_SIZE];
-
-        if (root->block[i] < SUPER_BLOCK_POS)
-            found = true; // no lo encontre pero ya no hay mas bloques validos 
-
-        int err = readFloppyDisk(root->block[i], buffer);
-        if(err == -1)
-            return -1;
-
-        dentry *entries = (dentry *)buffer;
-        for(int j = 0; j < FS_DENTRY_BLOCK && !found; j++){
-            dentry entrie = entries[j];
-            if(strCompare(entrie.name, fileName)){
-                readFloppyDisk(entrie.inode, buffer);
-                memCopy(buffer, file, sizeof(inode));
-                found = true;
-            }
-        }
-
-        i++;
-    }
-
-    return file;
 }
 
 int createFile(fileType type, char * fileName){
@@ -105,33 +105,33 @@ int createFile(fileType type, char * fileName){
 
     inode * newInode = createInode(type);
     if(newInode == NULL) goto error0;
-
+    
     // Creo el dentry
     dentry newDentry;
-
     strCopy(fileName, newDentry.name);
     newDentry.inode = blockPos;
 
     // Guardo el dentry en el inodo tipo dir actual
     int dentryBlock = root->size / FLOPPY_BLOCK_SIZE;
     int dentryOffset = root->size % FLOPPY_BLOCK_SIZE;
-
     if(root->block[dentryBlock] == 0)
         root->block[dentryBlock] = getFreeBlock();
 
+    // Guardo el dentry en disco
     uint8 dentryBuff[FLOPPY_BLOCK_SIZE];
     int floppyErr = readFloppyDisk(root->block[dentryBlock], dentryBuff);
     if(floppyErr == -1) goto error1;
     
     memCopy(&newDentry, dentryBuff + dentryOffset, sizeof(dentry));
-    writeFloppyDisk(root->block[dentryBlock], dentryBuff);
+    floppyErr = writeFloppyDisk(root->block[dentryBlock], dentryBuff);
     if(floppyErr == -1) goto error1;
 
-    root->size += sizeof(dentry);
-    
+    // Guardo el nuevo inodo en disco
     floppyErr = writeFloppyDisk(blockPos, newInode);
     if(floppyErr == -1) goto error1;
 
+    // Actualizo el inodo tipo dir actual
+    root->size += sizeof(dentry);
     floppyErr = writeFloppyDisk(SUPER_BLOCK_POS+1, root);
     if(floppyErr == -1) goto error1;
 
@@ -140,6 +140,55 @@ int createFile(fileType type, char * fileName){
 
     error1: free(newInode);
     error0: return -1;
+}
+
+int writeFile(char * fileName, uint8 * data, uint32 size){
+
+    if(fileName == NULL || strLen(fileName) >= FILE_NAME_SIZE)
+        return -1;
+
+    inode * file = findInodeInCWD(fileName);
+    if(file == NULL)
+        return -1;
+    if(file->type != DATA)
+        return -1;
+
+    
+    // TODO: hacerlo dinamico segun espacio del archivo
+    uint8 buff[FLOPPY_BLOCK_SIZE];
+    memCopy("Hola Mundooo\n", buff, 14);
+
+    file->block[0] = getFreeBlock();
+
+    writeFloppyDisk(file->block[0], buff);
+    
+    return 0;
+}
+
+void * readFile(char * fileName){
+    if(fileName == NULL || strLen(fileName) >= FILE_NAME_SIZE)
+        return NULL;
+
+    inode * file = findInodeInCWD(fileName);
+    if(file == NULL)
+        return NULL;
+    if(file->type != DATA)
+        return NULL;
+
+    int read = 0;
+    int lastDataBlock  = file->size / FLOPPY_BLOCK_SIZE;
+    int blockNum = 0;
+    while (read <= file->size && blockNum <= lastDataBlock && false){
+        uint8 buff[FLOPPY_BLOCK_SIZE];
+        readFloppyDisk(file->block[blockNum], buff);
+        // TODO: guardarlo y devolverlo en un puntero
+        printf("%s", buff);
+
+        blockNum++;
+        read += FLOPPY_BLOCK_SIZE;
+    }
+
+    return NULL;
 }
 
 void initFileSystem(){
@@ -161,23 +210,8 @@ void initFileSystem(){
         getFreeBlock();
         writeFloppyDisk(SUPER_BLOCK_POS+1, newInode);
         root = newInode;
+    }else{
+        readFloppyDisk(sBlock->root, buffer);
+        memCopy(buffer, root, sizeof(inode));
     }
-}
-
-int writeFile(char * fileName){
-
-    if(fileName == NULL || strLen(fileName) >= FILE_NAME_SIZE)
-        return -1;
-
-    inode * file = getInode(fileName);
-    if(file == NULL)
-        return -1;
-    if(file->type != DATA)
-        return -1;
-        
-    int dataBlock  = file->size / FLOPPY_BLOCK_SIZE;
-    int dataOffset = file->size % FLOPPY_BLOCK_SIZE;
-
-    
-
 }
