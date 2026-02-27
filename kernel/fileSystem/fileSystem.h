@@ -23,6 +23,7 @@
 // Tamaño maximo del nombre de un archivo
 #define FILE_NAME_SIZE 30
 #define FILE_MAX_BLOCKS 50
+#define FILE_MAX_SIZE FILE_MAX_BLOCKS * FLOPPY_BLOCK_SIZE
 
 typedef enum fileType{
     DIR,

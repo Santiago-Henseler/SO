@@ -112,10 +112,15 @@ int createFile(fileType type, char * fileName){
     newDentry.inode = blockPos;
 
     // Guardo el dentry en el inodo tipo dir actual
+    if(root->size >= FLOPPY_BLOCK_SIZE * FILE_MAX_BLOCKS) goto error1;
+
     int dentryBlock = root->size / FLOPPY_BLOCK_SIZE;
     int dentryOffset = root->size % FLOPPY_BLOCK_SIZE;
-    if(root->block[dentryBlock] == 0)
-        root->block[dentryBlock] = getFreeBlock();
+    if(root->block[dentryBlock] == 0){
+        int freeBlock = getFreeBlock();
+        if(freeBlock == -1) goto error1;
+        root->block[dentryBlock] = freeBlock;
+    }
 
     // Guardo el dentry en disco
     uint8 dentryBuff[FLOPPY_BLOCK_SIZE];
@@ -143,26 +148,44 @@ int createFile(fileType type, char * fileName){
 }
 
 int writeFile(char * fileName, uint8 * data, uint32 size){
-
     if(fileName == NULL || strLen(fileName) >= FILE_NAME_SIZE)
         return -1;
 
     inode * file = findInodeInCWD(fileName);
-    if(file == NULL)
-        return -1;
-    if(file->type != DATA)
-        return -1;
+    if(file == NULL) return -1;
+    if(file->type != DATA) return -1;
 
-    
-    // TODO: hacerlo dinamico segun espacio del archivo
-    uint8 buff[FLOPPY_BLOCK_SIZE];
-    memCopy("Hola Mundooo\n", buff, 14);
+    int dataWrited = 0;
+    while(dataWrited < size){
+        if(file->size + size > FILE_MAX_SIZE) goto error;
 
-    file->block[0] = getFreeBlock();
+        int block = file->size / FLOPPY_BLOCK_SIZE;
+        int offset = file->size % FLOPPY_BLOCK_SIZE;
+        if(file->block[block] == 0){
+            int freeBlock = getFreeBlock();
+            if(freeBlock == -1) goto error;
+            file->block[block] = freeBlock;
+        }
+            
+        uint8 buff[FLOPPY_BLOCK_SIZE];
+        int floppyErr = readFloppyDisk(file->block[block], buff);
+        if(floppyErr == -1) goto error;
 
-    writeFloppyDisk(file->block[0], buff);
-    
+        int dataLen = size - dataWrited > FLOPPY_BLOCK_SIZE - offset ? FLOPPY_BLOCK_SIZE - offset : size - dataWrited;
+        memCopy(data+dataWrited, buff+offset, dataLen);
+
+        floppyErr = writeFloppyDisk(file->block[block], buff);
+        if(floppyErr == -1) goto error;
+
+        dataWrited += dataLen;
+        file->size += dataLen;
+    }
+
+    // Guardo el estado final del inodo
+    // TODO: writeFloppyDisk(inodeBlockPos, file);
+
     return 0;
+    error: return -1;
 }
 
 void * readFile(char * fileName){
@@ -170,10 +193,9 @@ void * readFile(char * fileName){
         return NULL;
 
     inode * file = findInodeInCWD(fileName);
-    if(file == NULL)
-        return NULL;
-    if(file->type != DATA)
-        return NULL;
+    if(file == NULL) return NULL;
+    if(file->type != DATA) return NULL;
+
 
     int read = 0;
     int lastDataBlock  = file->size / FLOPPY_BLOCK_SIZE;
