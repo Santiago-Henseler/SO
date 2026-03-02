@@ -54,11 +54,11 @@ int getFreeBlock(){
     return freeBlock;
 }
 
-// Devuelve un puntero al inodo con nombre filename dentro del Current Work Directory
-// Si no lo encuentra retorna NULL
-inode * findInodeInCWD(char * fileName){
+// Devuelve devuelve el numero de bloque del inodo con nombre filename dentro del Current Work Directory
+// Si no lo encuentra retorna -1
+int findBlockInodeInCWD(char * fileName){
     //TODO: Esto hay que hacerlo con el current directory
-    inode * file = NULL;
+    int inode = -1;
 
     int i = 0;
     bool found = false;    
@@ -68,20 +68,33 @@ inode * findInodeInCWD(char * fileName){
 
         uint8 buffer[FLOPPY_BLOCK_SIZE];
         int err = readFloppyDisk(root->block[i], buffer);
-        if(err == -1) return NULL;
+        if(err == -1) return -1;
 
         dentry *entries = (dentry *)buffer;
         for(int j = 0; j <= root->size % sizeof(dentry) && !found; j++){
             dentry entrie = entries[j];
             if(strCompare(entrie.name, fileName)){
-                readFloppyDisk(entrie.inode, buffer);
-                file = (inode *)malloc(sizeof(inode));
-                memCopy(buffer, file, sizeof(inode));
+                inode = entrie.inode;
                 found = true;
             }
         }
         i++;
     }
+    return inode;
+}
+
+// Devuelve devuelve el puntero del inodo con nombre filename dentro del Current Work Directory
+// Si no lo encuentra retorna NULL
+int findInodeInCWD(char * fileName){
+    int inodeBlockNum = findBlockInodeInCWD(fileName);
+    if(inodeBlockNum == -1) return NULL;
+
+    uint8 buffer[FLOPPY_BLOCK_SIZE];
+    int err = readFloppyDisk(inodeBlockNum, buffer);
+    if(err == -1) return NULL;
+
+    inode * file = malloc(sizeof(inode));
+    memCopy(buffer, file, sizeof(inode));
     return file;
 }
 
@@ -151,10 +164,20 @@ int writeFile(char * fileName, uint8 * data, uint32 size){
     if(fileName == NULL || strLen(fileName) >= FILE_NAME_SIZE)
         return -1;
 
-    inode * file = findInodeInCWD(fileName);
-    if(file == NULL) return -1;
-    if(file->type != DATA) return -1;
+    // Obtengo el inodo
+    int blockNum = findBlockInodeInCWD(fileName);
+    if(blockNum == -1) return -1;
 
+    uint8 buffer[FLOPPY_BLOCK_SIZE];
+    int err = readFloppyDisk(blockNum, buffer);
+    if(err == -1) return -1;
+
+    inode * file = malloc(sizeof(inode));
+    memCopy(buffer, file, sizeof(inode));
+    if(file == NULL) goto error;
+    if(file->type != DATA) goto error;
+
+    // Escribo toda la data en los bloques
     int dataWrited = 0;
     while(dataWrited < size){
         if(file->size + size > FILE_MAX_SIZE) goto error;
@@ -181,11 +204,14 @@ int writeFile(char * fileName, uint8 * data, uint32 size){
         file->size += dataLen;
     }
 
-    // Guardo el estado final del inodo
-    // TODO: writeFloppyDisk(inodeBlockPos, file);
+    // Guardo el inodo actualizado
+    err = writeFloppyDisk(blockNum, file);
+    if(err == -1) goto error;
 
     return 0;
-    error: return -1;
+    
+    error: free(file);
+    return -1;
 }
 
 void * readFile(char * fileName){
@@ -196,11 +222,10 @@ void * readFile(char * fileName){
     if(file == NULL) return NULL;
     if(file->type != DATA) return NULL;
 
-
     int read = 0;
     int lastDataBlock  = file->size / FLOPPY_BLOCK_SIZE;
     int blockNum = 0;
-    while (read <= file->size && blockNum <= lastDataBlock && false){
+    while (read <= file->size && blockNum <= lastDataBlock){
         uint8 buff[FLOPPY_BLOCK_SIZE];
         readFloppyDisk(file->block[blockNum], buff);
         // TODO: guardarlo y devolverlo en un puntero

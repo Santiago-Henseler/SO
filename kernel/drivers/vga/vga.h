@@ -22,6 +22,7 @@
 #define GREEN 2
 #define RED   4
 #define WHITE 7
+//TODO: poner rosa :)
 
 // Escribo el str* sobre la memoria mapeada de la vga respetando el cursor
 void printVga(const char* str, int color);

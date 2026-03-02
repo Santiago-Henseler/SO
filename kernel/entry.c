@@ -27,13 +27,5 @@ void main(uint32 memRamSize){
   printf("[info] Se inicio la memoria paginada\n");  
   printf("[info] Se inicio el driver del floppy disk\n");  
 
-  createFile(DATA, "hola.c");
-
-  int a = writeFile("hola.c", "HOLA MUNDO\n", 0);
-
-  printf("err %i\n", a);
-
-  readFile("hola.c");
-
   for (;;);
 }
