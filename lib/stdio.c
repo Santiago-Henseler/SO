@@ -7,73 +7,63 @@ void appendStr(char * src, char ** dst, uint32 memLen, int i){
     memCopy(src, &(*dst)[i], strLen(src)+1);
 }
 
-void printf(char* str, ...){
+int printf(char* str, ...){
     // TODO: reemplazar printVga por syscall write (cuando exista)
     va_list args;
     va_start(args, str);
 
-    uint32 memLen = strLen(str);
-    char * txt = (char * )malloc(memLen+1);    
+    if(!strContains(str, '%')){
+        printVga(str, WHITE); 
+        return 0;
+    }
 
-    if(txt == NULL)
-        return;
-
-    int i = 0;
-    txt[i] = '\0';
-
+    char * txt = malloc(1);
+    txt[0] = '\0';
+    
     while (*str){
-        if(txt == NULL)
-            // TODO: kernel panic
-            return;
-
         if(*str == '%'){
             str++;
             switch (*str){
                 case 's':
                     char * s = va_arg(args, char *);
-                    appendStr(s, &txt, memLen, i);
-                    i += strLen(s); memLen += strLen(s);
+                    strConcat(s, &txt);
                     break;
                 case 'c':
                     char c = va_arg(args, int);
-                    char format[2] = {c, '\0'};
-                    appendStr(format, &txt, memLen, i);
-                    i++; memLen++;
+                    char * formatC[2] = {c, '\0'};
+                    strConcat(formatC, &txt);
                     break;
                 case 'i':
                     int num = va_arg(args, int);
-                    char * p = intToStr(num);
-                    appendStr(p, &txt, memLen, i);
-                    i += strLen(p); memLen += strLen(p);
-                    free(p);
+                    char * i = intToStr(num);
+                    strConcat(i, &txt);
+                    free(i);
                     break;
                 case 'u':
                     int uNum = va_arg(args, int);
                     char * u = uIntToStr(uNum);
-                    appendStr(u, &txt, memLen, i);
-                    i += strLen(u); memLen += strLen(u);
+                    strConcat(u, &txt);
                     free(u);
                     break;
                 case 'x':
                     int hex =  va_arg(args, int);
-                    char * hp = hexToStr(hex);
-                    appendStr(hp, &txt, memLen, i);
-                    i += strLen(hp); memLen += strLen(hp);
-                    free(hp);
+                    char * h = hexToStr(hex);
+                    strConcat(h, &txt);
+                    free(h);
                     break;
                 case 'b':
                     int boolean =  va_arg(args, int);
-                    char * txtBool = boolean ? "True\0" : "False\0"; 
-                    appendStr(txtBool, &txt, memLen, i);
-                    i += strLen(txtBool); memLen += strLen(txtBool);
+                    strConcat(boolean ? "True" : "False", &txt);
                     break;
                 default:
+                    char formatD[3] = {'%',*str, '\0'};
+                    strConcat(formatD, &txt);
                     break;
             }
         }else{
+            //TODO: obtener caracter hasta la aparicion de un %
             char format[2] = {*str, '\0'};
-            appendStr(format, &txt, memLen, i);
-            i++; memLen++;
+            strConcat(format, &txt);
         }
         str++;
     }
@@ -84,10 +74,12 @@ void printf(char* str, ...){
     va_end(args);
 }
 
-void putChar(char c){
-    printf("%c", c);
+int putChar(char c){
+    char * format[2] = {c, '\0'};
+    return printf(format);
 }
 
-void putInt(int i){
-    printf("%i", i);
+int putInt(int i){
+    char * num = intToStr(i);
+    return printf(num);
 }

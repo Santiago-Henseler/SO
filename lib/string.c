@@ -1,7 +1,7 @@
 #include "string.h"
 
 int32 strLen(const char *str){
-    
+
     if(str == NULL)
         return -1;
 
@@ -45,4 +45,34 @@ bool strCompare(const char *first, const char *second){
         second++;
     }
     return *first == *second;
+}
+
+int strConcat(char * src, char ** dst){
+    if(src == NULL || dst == NULL || *dst == NULL)
+        return -1;
+
+    uint32 lenDst = strLen(*dst);
+    uint32 lenSrc = strLen(src);
+
+    char * tmp = realloc(*dst, lenDst + lenSrc + 1);
+    if(tmp == NULL)
+        return -1;
+
+    *dst = tmp;
+
+    memCopy(src, &(*dst)[lenDst], lenSrc + 1);
+
+    return 0;
+}
+
+bool strContains(char * str, char c){
+    bool contains = false;
+
+    while(*str && !contains){
+        if(*str == c)
+            contains = true;
+        str++;
+    }
+
+    return contains;
 }

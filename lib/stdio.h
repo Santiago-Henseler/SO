@@ -9,12 +9,12 @@
 // Muestra en pantalla agregando el formato indicado 
 // Soportado:  %s => char * ;  %i => int  ;  %c => char ;
 //             %x => hexa       
-void printf(char* str, ...);
+int printf(char* str, ...);
 
 // Wraper a printf para escribir un solo caracter
-void putChar(char c);
+int putChar(char c);
 
 // Wraper a printf para escribir un entero
-void putInt(int i);
+int putInt(int i);
 
 #endif

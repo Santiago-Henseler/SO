@@ -1,4 +1,4 @@
-// TODO: controlar los imputs de toda la lib
+// TODO: controlar los inputs de todas las lib (NULLs, valores validos etc)
 #include <vga/vga.h>
 #include <stdio.h>
 #include <idt.h>
@@ -14,7 +14,7 @@ extern uint8 kernelStart;
 void main(uint32 memRamSize){
   clearVga();
   initInterrupts();
-  
+
   uint32 kernelSize = (uint32)&kernelEnd - (uint32)&kernelStart;
   initMemBlock(memRamSize - kernelSize);
   initPageTable(memRamSize - kernelSize);
